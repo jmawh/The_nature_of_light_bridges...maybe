@@ -1,6 +1,8 @@
-; 
-; Script to present different types of images and moving images.
-; 
+; ########################################################################################################
+; This script currrently represents the entire code base. In time it will be split up into something
+; more acceptable
+; ########################################################################################################
+
 
 ; Getting the data. This returns an array of 408 objects, each with 47 images
 
@@ -265,7 +267,7 @@ device, /close
 set_plot, 'x'
 
 
-; 				First contouring attempt
+; 			https://github.com/jmawh/The_nature_of_light_bridges...maybe.git	First contouring attempt
 ; 		   Skeleton code borrowed from Scott; well modified
 
 sigma_100 = 40.9
