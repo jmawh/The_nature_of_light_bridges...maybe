@@ -1,0 +1,301 @@
+1. Write my own mean subtraction code that has an acceptable run time. - virtually
+   done, it runs in the time it takes to drink a coffee which is better than the
+   original at ~ length of my master's project.
+	The code isn't complete and you do lose the first and last 25 frames from the data
+   however there is a solid argument for removing them anyway - the RMS isn't going to be 
+   as good. At least it's something - maybe try it later in python since it will be
+   faster
+
+2. Find the optimal value to average over by visual inspection and
+   by investigating the minimum and maximum values of intensity.
+	The following results were obtained using a modified version of the existing
+	departmental RMS code - NOT the one I wrote for the same job.
+	There is minimal visual differences between 300 and 500 seconds of averaging.
+	At 100 seconds the film appears to be overall lighter in colour.
+	MINMAX(sub_scans_100) = (-1642, 2468)
+	MINMAX(sub_scans_300) = (-2780, 2827)
+	MINMAX(sub_scans_500) = (-3031, 2550)
+	This is shown in the range of intensities that are shown, all of the scans have 
+	approximately the same brightness but 300 and 500 have much lower minimum 
+	intensities (compared to the mean).
+	
+	The means of the three diferent time averaged arrays were as follows
+	MEAN(sub_scans_100) = -0.035
+	MEAN(sub_scans_300) =  0.014
+	MEAN(sub_scans_500) = -0.502
+	and the standard deviations:
+	STDDEV(sub_scans_100) = 40.9
+	STDDEV(sub_scans_300) = 80.0
+	STDDEV(sub_scans_500) = 90.6
+	So, in this case a longer time to average over led to a higher standard deviation.
+	This suggests that the changes that occur are not periodic within the time
+	series that we are dealing with? 
+	
+	Also, the standard deviations are much higher than the difference in the mean and
+	the expected mean (assuming RMS reduces the average to zero) which is nice.
+
+	For a more complete picture of the difference that the different averaging makes
+	we can look at a histogram of the intensities for the different time averages.
+	This file is currently stored here: 
+		/home/40147775/msci/my_code/histograms.eps
+	These histograms reveal that the intensity spread is much smaller for the 
+	shorter time average. The peak also changes each time.
+
+
+
+3. Cut off the messy data at the end of the time series. 
+	From zero to 314 the images are as expected
+	From 315 to 336 the data is not good
+	From 337 to the end the data is as expected
+	We would be losing around a quarter of the data if we were to remove everything 
+	after it so it is neccessary to avoid analysis on this section or to top and 
+	tail the data set and rejoin it - ensuring that no connections or links are made
+	between the shocks in the time series.
+	
+	The messed up data has further reaching implications than just the immediate problem
+	of whether or not to remove the data. Since a running mean subtraction is being utilised
+	it is neccessary to consider the effects that the bad data will have on the frames 
+	(25) that are on either side of the affected data. Removing everything that could
+	be affected would result in the loss of 71 total frames (theoretically).
+
+4. Contour the shocks based on their brightness in terms of standard deviations.
+	The shocks have been contoured at levels of 50 and 100 (on the same plot) and then saved
+	out for turning into a video later. The contour area has also been decrased by applying
+	two different masks, one that is the shape of the umbra and another that is simply
+	a rectangle, this helps to focus the field of view and make it easier to see what
+	is happening.
+
+5. Does light bridge intensity change after impact with the shocks?
+	Let's start by examining a few light curves of pixels that are in the light bridge -
+	if they show occasional spikes in intensity that could be the first indications	 
+	that the shocks are heating them. it will however be neccessary to sychronize the 
+	spikes with the frames to see if a shock is incident at that time.
+
+	However the problem with this method is that we are actually pickng up the 
+	shocks that pass over the LB as well as any potiential impacts with the LB.
+	Sadly, i'm not sure how to isolate these.
+
+6. Manually search the data set for frames where the shock does pass past the light bridge
+   and for frames where the shock is reflected/interacts with the light bridge.
+
+	Frame 32 - left umbra, play forward, the shock develops, spreads in a circular
+	pattern until frame. The shock is interupted by the LB at frame 41 when there is
+	a noticeable increase in intensity at the LB. The increase in intensity spreads 
+	vertically up the LB over the subsequent frames.
+
+	Frame 57 - left umbra, small cicrular shock front that impacts the LB in Frame 59
+	/60. Intensity incrrease observed in the LB, shock stopped by the LB.
+	
+	Frame 73 - left umbra, shock hits the LB in frame 77, LB stops the shock and
+	brightens.	
+
+	Frame 90 -left umbra, area of high intensity just left of the LB. Playing through
+	to frame 100 reveals that the shock has dissipated into a rough ellipitical
+	shape, passing over the LB with no obvious change in intensity in the LB.
+
+	Frame 135, right umbra, there is a shock front moving to the left, it spreads
+	out until, by frame 140, it is roughly where the LB is however after this it
+	dissipates without any unexpected temperature increases. (up to frame 143).
+
+	Frame 156, left umbra, bright patch nearest the umbra, collides with the LB
+	in frame 159 - there appears to be a temporary reduction in intensity.
+	However, in frame 160 there appears to be a re-bound of the shock. This rebound
+	continues to propagate to the 'south west' through the 160's. It seems that the
+	rebound then interacts with another shock that is just beginnning to develop - 
+	there is a flash of intensity around.
+
+	Frame 171, left umbra, small area of very high intensity incident on the LB.
+	It spreads out against the LB but doesn't pass through or change the intensity
+	of the light bridge. The brightness simply seems to spread out along the length
+	of the LB and fade.
+
+	Frame 185, left umbra, moving to the right. The shock appears to collide 
+	with the LB and dissipate, it doesn't pass through, the shock has dissapeared by
+	frame 192.
+
+	Frame 208 - right umbra, just beside the bottom two identifying LB dots. The 
+	shock grows and expands, passing over the light bridge through to frame 222.
+	The shock appears to merge with another shock in frame 212.
+
+	Frame 225 - right umbra, this shows the collison of two shocks (frame 228-9).
+	The resulting increase in brightness is similar to the increase observed when 
+	a shock collides with the light bridge, frame 40 ish. The shock doesn't appear
+	to pass over the LB and dissipates shortly after the shock merger.
+
+	Frame 253 - this appears to show the evolution of two similar, possibly 
+	connected events, one in the left umbra and the other just at the light bridge
+	(right side). The brightenings appear and grow together until frame 258 
+	when the right one fades- faster than the left.
+
+	Frame 271 - right side of the LB (virtually in the LB). The brightness 
+	increases quickly and spreads along the LB but doesn't really spread out 
+	from the LB. It has traversed the LB and disssipated by frame 280. the light
+	curve for this area of the LB is interesting too, it shows that the maximum 
+	brightness in this section is over 300 (~ 4 sigma above the mean) and shows 
+	that the brightness is below the mean before and after the spike in brightness.
+
+	Frame 291 - two shocks begin to develop, one in the right umbra and one in
+	the left. They both move toward the LB until 296 when they appear to collide 
+	with each other without impacting the LB and by frame 300 they have disappeared.
+
+	Data unusable from 309 to 348. It could be argued that some of the observations
+	may be valid but I think it is better to only base results on data that we are
+	sure is as reliable as possible.
+
+	Frame 382, left umbra, shows a lower intensity shock front incidient on the LB.
+	It dissipates very quickly, possibly before it really interacts with the LB.
+
+	This probably isn't an exhaustive list but it does provide some examples of
+	different behaviour. If differences in the shocks can be identified that will
+	give the first indictions of parameters that affect the propagation of the shocks.
+
+6b. Can we create a mark of the LB on the deeper scans? I will take 10 pixels of the
+    light bridge and mark them in some way then paste those pixels into the sub_scan_300
+    image.
+	So, on the surface scan take the points (409, 470),(405,497),(405,455),(397,430)
+	(418,432), (424,457),(432,476), (432,505), (420,509),(403,511).
+	Then set these pixels to be more intense than the surroundings and, in
+	theory they will stand out.
+	This proved to be more complicated than i thought. The points need a rotation
+	270 deg anti clockwise to line them up - the rotation is in the RMS code
+	but I have no idea why? - Need to ask.
+
+	After rotation the points match well to the expected area of the light bridge.
+	So we can select some central points of the LB: (412,557), (414,545), (416,530)
+	(416,510). From these points an average light curve for the LB can be found
+	although it will be pretty crude since there is only 4 pixel intensities.
+
+7. We have determined some of the shocks that appear to impact the LB. Can we revisit
+   the light curve for the light bridge and associate some of the peaks with shocks?
+	Using the four points as found at the end of 6b an average light curve can 
+	be created.
+
+	Frame 40 ish - there ought to be a brightening, there is, which is nice.
+	The peak is around 42nd frame at an intensity of ~100.
+
+	Frame 90-100 we are expecting no significant change to the light bridge 
+	and indeed, the intensity (RMS) is around 0 +- 20 between 90 and 100
+	however there is an increase up to around 50 by frame 106.
+
+	Frame 160 - 190. Light curve appears roughly sinusodial
+
+8. Exploring features of the overall LB light curve.
+	The majority of the light curve displays an oscillating average brightness
+	roughly between -100 and +100  (where the standard deviation of the image as
+	a whole is 80). Also the oscillations seem to be relatively uniform for much 
+	of the observation time, there is a period of increase followed by an 
+	approximately similar size of decrease. Some exceptions are around 180-190
+	frames where there are many more small oscillations. Some of the troughs
+	of intensity also have a clear 'splitting' where there is a small increase 
+	in brightness then a decrease but this change is much smaller than the overall
+	 trends. 
+		One of the biggest deviations from these otherwise constant oscillations
+	is spike that occurs around the 275th frame - see observation of this frame
+	above. The intensity increases to 319 - the highest in the data set. It is also 
+	bordered on both sides by the two lowest values in the data set, around -170.
+		After this large spike the oscillation isze appears to return to the 
+	values observed in the first section if the data set.
+
+	This is worth repeating with more pixels from the light bridge to see
+	that the results can be replicated.
+
+9. How far do typical shocks propagate? What does it depend on?
+	For this it would be useful to have a temperature map. Most of the shocks seems 
+	to only travel about 2/3 the distance of the small umbra but some travel much
+	farther - some additonal insight is needed.
+
+10. Take a pixel (or square of pixels) and plot the doppler velocity.
+	Doing this for a 6 term gaussian for both the average profile and the area 
+	of investigation produced a doppler shift that mostly hovered around +-3
+	however there were 3 shocks that had DV's of ~ -30km/s - these need more 
+	investigation.
+
+	i) Do they go away by selecting a different section of the SP, away from LB?
+	Selecting an  area of the quiet sun, (861,716) shows encouraging results,
+	the velocities are between -0.5 and 2km/s  with no large spikes anywhere
+	and what appears to be a random pattern.
+	However, selecting a region in the umbra gives a large number of tall spikes
+	typically around -30, not sure why.
+
+	ii) Can they be recreated frame by frame?-ensuring the mistake isn't in the loop.
+        Yes, yes they can. The lambda difference is consistent with different code
+	so it's less likely to be a typo thing.
+
+	iii) Does the gaussfit of the strange behaviour areas look normal?
+	No, this is the problem, the really bad areas have a fit that doesn't even 
+	resemble the shape we want. The gaussfit instead fits to the left hand side of the 
+	profile and is constant thereafter. The problem can be fixed by setting estimates
+	of the parameters in the call to Gaussfit to the values found for the quiescent solar
+	surface. This 'forces' the curve to fit in the direction that is required for 
+	the curve to represent the profile. The range of values of the LOS velocities is 
+	now roughly 0 - 5 km/s. The most interesting thing is that although there is 
+	velocity spikes outside those reported in previous papers, the positive value
+	of the spike velocity implies a movement into the solar surface and then a rebound
+	rather than a movment outward from the solar sufrace followed by a relaxation.
+	Initial observations also suggest that the 'relaxation' takes place at a similar
+	velocity to the initial movement - this might be contrary to expectation thus 
+	will require a little further investigation. 
+
+	The largest spikes in the data set occur around 40, 57 and 75 frames respectively
+	and these are 3 locations where we notice the shock colliding with the light
+	bridge - this is certainly encouraging and might provide a way to identify the 
+	nature of future interactions: if there is a new data set a plot the LOS velocites
+	might provide a way to select certain areas where collisions are likely for 
+	further investiagtion. 
+
+
+11. It seems there are 3 options for a shock interaction with a LB
+	1. Ths shock passes over the LB.
+	2. The shock hits and heats the LB causing DV towards the observer.
+	3. The shock rebound from the LB -frame 156 +, - the LB doesn't appear 
+	   to absorb much of the energy since it doesn't heat up.
+
+12. How quiet is the quiet sun?
+	We will assume that if the square of 51k+ pixels doesn't change significantly 
+	over time then any of them should provide a good profile for the quiet Sun. 
+	Since the only measure from the profile of the quiescent sun that is used in
+	further analysis and determination of the LOS velocities (goo or bad though they
+	may be) is the mean of the profile. So this section investigates the evolution 
+	of the mean of the curve fit to the guiet Sun over time. If any significant 
+	chnages occur across the time series (ignoring the area of bad data) then it will
+	be neccessary to average over the whole time series in order to achive an better 
+	estimate of the line core value of the quiescent solar surface.
+
+	The solar surface has a mean profile core of 8542.0169 with a standard deviation 
+	of 0.00349 (this is after replacing the bad data profile core values with 
+	the mean core value of the data set.) CAUTION: mean in idl is NOT sufficiently
+	precise for this calculation. Simply using mean returned a result of 8542.0039, 
+	however this didn't look right on the plot. Including the command /double
+	inside the call to the mean() routine changed the value of the mean that was
+	returned to 8542.0169. This looks much better on the plot but it does have 
+	obvious implications for other analysis carried out thus far. It will be 
+	neccessary to recheck each previous time mean has been used (such as my RMS code).
+
+	The determination of the mean and standard deviation of the line core in the 
+	quiet sun allows determination of errors on the LOS velocities (or anything else
+	that uses the data.) In the existing code it will be correct to replace the 
+	exisiting mean_avg_profile with the new average mean. The results can then be 
+	re-interepted.  
+
+	Thankfully this has a largely unobservable effect on the LOS velocity plot, as in
+	the instrument corrected (best version). It looks the same. 
+
+	What is the physical size of the standard deviation? 
+	We can take the standard deviation and use it to compute the doppler velocity - 
+	this effectively provides an estimate of the noise level inherent from the 
+	quiet sun (and ONLY the quiet sun - other sources no doubt exist). Doing this 
+	results in a value of doppler velocity of 0.122 km/s. The oscillations in the 
+	plot of doppler velocity across time are at least an order of magnitude larger,
+	typical values fall between 1 and 5 km/s so the noise level due to fluctations
+	in the quiescent Sun are much smaller than the observation.
+
+	This is especially useful when looking at the range between 100 and 170 frames,
+	there is a oscilltion that looks as if it could be noise but it is much larger
+	than the current noise threshold though noise from other soucres should be 
+	considered. 
+
+13. Speed of the shocks, get approximate speeds of the shocks associated with each 
+    interaction event.
+	
+
+14. Does temperature affect the behaviour of the shock

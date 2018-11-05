@@ -12,7 +12,7 @@ tvim, cube_1[*,*,1], /sc
 
 xstepper, cube_1>50<3000, xsize = 500, ysize=500
 
-Alternatively we can select a particular wavelength and look at how the picture changes in time.
+; Alternatively we can select a particular wavelength and look at how the picture changes in time.
 
 time_cube_15 = FLTARR(1000,1000,408)
 
