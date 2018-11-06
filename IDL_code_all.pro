@@ -113,29 +113,37 @@ xstepper, mean_time_cube_15, xsize=700, ysize=700
 ; ###################################################################################################
 ; 				My Running Mean Subraction, using time_cube_15
 ; ###################################################################################################
+ 
+rms_time_cube_15 = FLTARR(1000,1000,408)
+last_25 = time_cube_15[*,*,382:407]
+first_25 = time_cube_15[*,*,0:24]
+last_25_rms = fltarr(1000,1000)
+first_25_rms = fltarr(1000,1000)
 
-rm_time_cube_15 = FLTARR(1000,1000,408)
-
-FOR k = 25, 382 DO BEGIN &$
-	print, k &$
-	FOR i = 0, 999 DO BEGIN &$
-		FOR j = 0, 999 DO BEGIN &$
-			mini_cube_15 = time_cube_15[i,j, (k-5):(k+5)] &$
-			rm_time_cube_15[i,j,k] = MEAN(mini_cube_15) &$
+FOR i = 0, 999 DO BEGIN &$
+	FOR j = 0, 999 DO BEGIN &$
+		last_25_rms[i,j] = MEAN(last_25[i,j,*]) &$
+		first_25_rms[i,j] = MEAN(first_25[i,j,*]) &$
 ENDFOR
 
-final_rms_time_cube_15 = time_cube_15 - rm_time_cube_15
-xstepper, final_rms_time_cube_15[*,*,25:382], xsize=700, ysize=700
-
-rms_time_cube_15 = FLTARR(1000,1000,408)
 FOR k = 25, 382 DO BEGIN &$
 	print, k &$
 	FOR i = 0, 999 DO BEGIN &$
 		FOR j = 0, 999 DO BEGIN &$
-			mini_cube_15 = time_cube_15[i,j, (k-5):(k+5)] &$
+			mini_cube_15 = time_cube_15[i,j, (k-10):(k+10)] &$
 			rms_time_cube_15[i,j,k] = MEAN(mini_cube_15) &$
 ENDFOR
 
+; finding the total mean array:
+FOR i=0, 24 DO BEGIN &$
+	rms_time_cube_15[*,*,i] = first_25_rms[*,*] &$
+	rms_time_cube_15[*,*,i+382] = last_25_rms[*,*] &$
+ENDFOR
+
+																																																																																																													final_rms_time_cube_15 = time_cube_15 - rms_time_cube_15
+xstepper, final_rms_time_cube_15, xsize=700, ysize=700 
+
+																																																																																																																																											
 	
 ; ################################################################################################
 ; 		Running Mean Subtraction, Comparison of different averaging times. 
