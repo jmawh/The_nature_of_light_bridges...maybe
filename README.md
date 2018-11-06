@@ -1,2 +1,2 @@
-# The_nature_of_light_bridges...maybe
+# The nature of light bridges...maybe
 Code contributing to the Msci project of James Mawhinney, QUB
