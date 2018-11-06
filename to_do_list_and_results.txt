@@ -294,8 +294,16 @@
 	than the current noise threshold though noise from other soucres should be 
 	considered. 
 
-13. Speed of the shocks, get approximate speeds of the shocks associated with each 
+13. Identifying the optical height of the heating in frame 41 in terms of the 75
+    steps of optical depth.
+	Around frame 59-61 the area of the light bridge (rotated for some reason) 
+	the area of the light bridge that was previously noted to have an increased
+	luminosity shows a temperature increase relative to the surrounding area.
+	Hopefully by taking an x-y plot over time at 60th tau step will show 
+	the shock propagating toward the light bridge?
+
+Speed of the shocks, get approximate speeds of the shocks associated with each 
     interaction event.
 	
 
-14. Does temperature affect the behaviour of the shock
+Does temperature affect the behaviour of the shock
