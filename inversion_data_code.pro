@@ -18,6 +18,8 @@ tvim, fit_model_temp[25,*,*], /sc
 ; ###########################################################################################
 ; 	Cutting down the first 40 to the same size as the rest - saved in test_folder
 ; ###########################################################################################
+; The first 40 frames (0-39) came with a full screen scan which is uneccessary and creates a 
+; much bigger file size. This cuts that down
 ; file path to folder containing only the 0-39 th files - this only fixes the fit_model_temp files
 ; '/home/40147775/msci/inversion_data/zero_to_39_full_scans/inversion_burst_0000.sav'
 
@@ -60,7 +62,7 @@ ENDFOR
 xstepper, tau_and_x_against_time, xsize=1900, ysize=500
 ; frame 72,y=276 on is interesting - heat develops, propagates, collides, moves down to some extent?
 ; frame 39, y=284 just above the LB looks pretty odd - maybe check y=281-287 1 by 1
- 1 by 1
+
 ; ###########################################################################################
 ; 		 time evolution of x against y for a single optical depth
 ; ###########################################################################################
@@ -71,7 +73,7 @@ FOR i=0, 109 DO BEGIN &$
 	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
         IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
         IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
-	x_and_y_against_time[*,*,i] = fit_model_temp[60,*,*] &$
+	x_and_y_against_time[*,*,i] = fit_model_temp[10,*,*] &$
 ENDFOR
 
 xstepper, x_and_y_against_time, xsize=700, ysize=700
@@ -81,7 +83,43 @@ restore, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0041.sav'
 xstepper, TRANSPOSE(fit_model_temp), xsize=700, ysize=700
 ; this is shows the LB hotter than surroundings at about 60th optical depth step
 
+; #############################################################################################
+; 	Saving out some variables that do not have corrections applied
+; #############################################################################################
+; tau_and_x_against_time_n implies this took place at a y value of n 
+; x_and_y_against_time_n implies this view is at the nth tau step
+
+SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/uncorrected_first_analysis.sav', tau_and_x_against_time_276, tau_and_x_against_time_284, x_and_y_against_time_60, x_and_y_against_time_10
+
+; #############################################################################################
+; 		Applying corrections to the data.
+; #############################################################################################
+restore, '/home/40147775/msci/inversion_data/my_sav_files/uncorrected_first_analysis.sav'
+; see variables above for those saved into this file.
+restore, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0041.sav'
+restore, '/home/40147775/msci/inversion_data/14Jul_Inv/nlte_temp_correction_all.sav'
+; /verbose yields depthscale (optical depths, tau) QS_corr, penumb_corr, umb_corr
+
+ 
+temp = fit_model_temp
+umbra = REFORM(temp[*,276,313])
+umbra_corr = REFORM(temp[*,276,313])*umb_corr
+
+plot, depthscale, umbra
+oplot, depthscale, umbra_corr, color='90'
+plot, umbra_corr/umbra
+
+; Creating a corrected version of tau_and_x_against_time_276
+corr_tau_x_time = fltarr(551,75,110)
+FOR i=0, 74 DO BEGIN &$
+	corr_tau_x_time[*,i,*] = reform(tau_and_x_against_time_276[*,i,*]) * penumb_corr[i] &$
+ENDFOR
+
+pmm, tau_and_x_against_time_276
+pmm, corr_tau_x_time
+
+xstepper, tau_and_x_against_time_276>2500<10000, xsize=1900, ysize=500
+xstepper, corr_tau_x_time>3500<14000, xsize=1900, ysize=500
 
 
-	
 
