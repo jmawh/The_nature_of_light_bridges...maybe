@@ -307,7 +307,7 @@
 	 and convective so it seem that the umbral correction isn't correct. Likewise
 	it seems wrong to claim that the light bridge is similar to the quiet sun, 
 	especially given the turbluent and stronger nature of the magnetic field in 
-	that area. This leaves the ornumbral filter in this case, either that or 
+	that area. This leaves the penumbral filter in this case, either that or 
 	create a custom one to deal with light bridges but doing that from a single 
 	data set may yield results that aren't transferable. Also, since we are unable
 	to trust any or the corrections fully it will be difficult to get values of
@@ -318,6 +318,28 @@
 	Should be noted here that the corrections are all a function of tau - a plot
 	of what the different corrections look like would make a good plot for the 
 	paper. 
+
+15. Try to go back, find pixels that shocks cross away from the LB and examine those in
+    the temperature inversions.
+	By looking at marked_sub_scans[200:750, 210:860,9] there is intensity spikes 
+	at a y value around 293 in both umbra. However, if we look at the temperature
+	inversions for the whole range of x values right throught the amtmospheric 
+	depth no visible heating is present either in the uncorrected data set or
+	in the data set with the umbral corrections applied. I'm really not sure 
+	why this is the case. I was expecting to see the intensity correspond to some
+	kind of additonal heating. Unless it's the rotation again - that would be 
+	annoying. Let's check:
+	Data set is now 551 by 551 so the mid point is ~ (275,275) to undo the rotation
+	in question reflect the y value about the point 275. 
+		293-275 = 18
+		275-18 = 257
+	Using the y value of 257 fixes the problem, the hot spots appear where they 
+	should and evolve roughly as expected so at least the intensity can be linked
+	to the temperature in the uncorrected data set. The height of the temperature
+	burst is such that when the umbral correction appears it is much harder to 
+	notice the temperature variations - they are at the height of the hotter
+	part of the umbra. - it might be neccessary to try to change the limits of the 
+	display to allows the to show up.
 
 Speed of the shocks, get approximate speeds of the shocks associated with each 
     interaction event.
