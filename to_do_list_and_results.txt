@@ -341,6 +341,21 @@
 	part of the umbra. - it might be neccessary to try to change the limits of the 
 	display to allows the to show up.
 
+16. Make time cubes for each of the shock events that interact with the light bridge
+    and label them as event_frame_n where n is the first frame.
+	Frames 32 - 45: Centre of brightening is (403,548) in rms time cube.
+	This events needs a slice inclinedat some angle - 45 would do.
+
+	Frames 54 - 65: Centre of brightening is (402, 546) in the rms time cube. 
+	This event really needs a slice inclined at 45 degrees.
+
+	Frames 73 - 81: The evolution of the shock ought to be clear by taking a slice
+	through (385,552) (rms scan) with the x value constant. A vertical line through
+	(403,556) will show the shock spreading over the light bridge.
+
+	Frames 90 - 102: Passes over light bridge at ~(403,556), 45 degree angle would
+	be good. 
+
 Speed of the shocks, get approximate speeds of the shocks associated with each 
     interaction event.
 	

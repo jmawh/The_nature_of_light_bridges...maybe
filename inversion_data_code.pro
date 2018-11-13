@@ -22,7 +22,7 @@ tvim, fit_model_temp[25,*,*], /sc
 ; much bigger file size. This cuts that down
 ; file path to folder containing only the 0-39 th files - this only fixes the fit_model_temp files
 ; '/home/40147775/msci/inversion_data/zero_to_39_full_scans/inversion_burst_0000.sav'
-
+; THIS CODE IS REDUNDANT, DATA DELETED TO MAKE SPACE
 FOR i=0, 39 DO BEGIN &$
 	IF (i le 9) THEN RESTORE, '/home/40147775/msci/inversion_data/zero_to_39_full_scans/inversion_burst_000'+arr2str(i, /trim)+'.sav' &$
 	IF (i gt 9) AND (i le 99) THEN RESTORE, '/home/40147775/msci/inversion_data/zero_to_39_full_scans/inversion_burst_00'+arr2str(i, /trim)+'.sav' &$
@@ -202,3 +202,64 @@ ENDFOR
 
 xstepper, tau_and_y_against_time, xsize=1900, ysize=500
 xstepper, corr_tau_y_time, xsize=1900, ysize=500
+
+; ######################################################################################################
+; 			Creating time cubes examining each shock event at LB
+; ######################################################################################################
+
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/common_vars.sav'
+; Results in to_do_list_and_results
+xstepper, marked_sub_scan, xsize = 700, ysize=700
+tvim, marked_sub_scan[200:700,400:700,75], /sc
+
+; Turning marked_sub_scan coordinates into ones that can be used with the inversion data set:
+old_x = [403, 402, 385] 
+old_y = [548, 546, 552]
+new_x = old_x - 200
+new_y = (500-(old_y-500)) - 260
+; these might all hve wrong y values
+; 1. (403,548) -> (203,192), 45 deg
+; 2. (402,546) -> (202,194), 45 deg
+; 3. (385, 552)-> (185,188), vertical (403,548) -> (203,192), vertical
+; 4. (403,548) -> (203,192), 45 deg
+
+; ###################################################################################################
+; 			Creating a slice at 45 degrees to the x-axis - not general
+; ###################################################################################################
+; the offset term refers to the difference in x and y. For example, to have a line of gradient 1
+; pass through (203,192) it needs to start at (11,0) => offset of 11.
+; This needs changed of each and every different coordinate! The offset also needs moved to the 
+; pix_y variable if the y ordinate is larger than the x ordinate.
+
+angle_slice_tau_against_time = fltarr(500, 75, 110)
+offset = 11
+FOR i=0, 109 DO BEGIN &$
+	print, i &$
+	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
+	temp = fit_model_temp &$
+	FOR f=0, 499 DO BEGIN &$
+		pix_x = offset + f &$
+		pix_y = f &$
+		angle_slice_tau_against_time[f,*,i] = temp[*, pix_x, pix_y] &$
+ENDFOR
+	
+xstepper, angle_slice_tau_against_time, xsize=1900, ysize=300
+
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0075.sav'
+
+image = REFORM(fit_model_temp[40,*,*])
+image2 = marked_sub_scan[*,*,75]
+FOR i=0, 400 DO BEGIN &$
+	image[i,i+89] = 1000 &$
+ENDFOR
+
+
+image = fit_model_temp[15,*,*]
+image[1, 250, 10] = 1000
+
+
+arr = fltarr(1,10,10)
+arr[*,1,*] = 1
+
