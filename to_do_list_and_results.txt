@@ -350,13 +350,32 @@
 	Frames 32 - 45: Centre of brightening is (403,548) in rms time cube.
 	This events needs a slice inclinedat some angle - 45 would do.
 	(403,548) -> (203, 288)
+	Line location and atmosphere slice saved in my_sav_files/slice_403_548_45deg.sav	
+	I don't notice the shock in this stepper and I'm not sure why - might be too low
+	in the atmosphere and blotted out by the hotness at the bottom of the atmosphere.
+	To check, look at the 41st frame of time and examine x and y as tau evolves.
+	Saved in x_and_y_against_tau_frame_41.sav
 
 	Frames 54 - 65: Centre of brightening is (402, 546) in the rms time cube. 
 	This event really needs a slice inclined at 45 degrees.
+	(403, 546) -> (203, 286)
+	Line location and atmosphere slice saved in my_sav_files/slice_403_546_45deg.sav
 
 	Frames 73 - 81: The evolution of the shock ought to be clear by taking a slice
 	through (385,552) (rms scan) with the x value constant. A vertical line through
 	(403,556) will show the shock spreading over the light bridge.
+	(385, 552) -> (185, 292), (403,556) -> (203, 296)
+	Taking the full x and y image of the 74th time step and then creating a stepper
+	that moves over optical depth: The intensity pattern is noticable eveywhere- 
+	the entire atmosphere is hotter than the surrounding area at the
+	shock coordinates.
+	Moving to frame 77 and looking at the light bridge: The Lb is hotter than the 
+	surrounding umbra at depthscale steps from 56 to 74. So although the shock front is
+	present throughout the full height of the atmosphere significant heating only seems
+	to occur at lower atmospheric heights. Is this becasue the LB is much denser at 
+	this height - or is this when the LB starts? If so this will give a good estimate
+	of the height of the light bridge.
+	
 
 	Frames 90 - 102: Passes over light bridge at ~(403,556), 45 degree angle would
 	be good. 

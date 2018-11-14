@@ -204,19 +204,19 @@ xstepper, tau_and_y_against_time, xsize=1900, ysize=500
 xstepper, corr_tau_y_time, xsize=1900, ysize=500
 
 ; ######################################################################################################
-; 			Creating time cubes examining each shock event at LB
+; 			Creating time cubes examining each shock event at LB - REDUNDANT
 ; ######################################################################################################
 
-RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/common_vars.sav'
+;RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/common_vars.sav'
 ; Results in to_do_list_and_results
-xstepper, marked_sub_scan, xsize = 700, ysize=700
-tvim, marked_sub_scan[200:700,400:700,75], /sc
+;xstepper, marked_sub_scan, xsize = 700, ysize=700
+;tvim, marked_sub_scan[200:700,400:700,75], /sc
 
 ; Turning marked_sub_scan coordinates into ones that can be used with the inversion data set:
-old_x = [403, 402, 385] 
-old_y = [548, 546, 552]
-new_x = old_x - 200
-new_y = (500-(old_y-500)) - 260
+;old_x = [403, 402, 385] 
+;old_y = [548, 546, 552]
+;new_x = old_x - 200
+;new_y = (500-(old_y-500)) - 260
 ; these might all hve wrong y values
 ; 1. (403,548) -> (203,192), 45 deg
 ; 2. (402,546) -> (202,194), 45 deg
@@ -224,27 +224,28 @@ new_y = (500-(old_y-500)) - 260
 ; 4. (403,548) -> (203,192), 45 deg
 
 ; ###################################################################################################
-; 			Creating a slice at 45 degrees to the x-axis - not general
+; 			Creating a slice at 45 degrees to the x-axis 
 ; ###################################################################################################
 ; the offset term refers to the difference in x and y. For example, to have a line of gradient 1
-; pass through (203,192) it needs to start at (11,0) => offset of 11.
-; This needs changed of each and every different coordinate! The offset also needs moved to the 
-; pix_y variable if the y ordinate is larger than the x ordinate.
+; pass through (403,548) -> (203,288) it needs to start at (0,85) => offset = 85
+; (403, 546) -> (203, 286), offset = 83
 
+
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0041.sav'
 angle_slice_tau_against_time = fltarr(450, 75, 110)
-offset = 85
+line_of_slice = REFORM(fit_model_temp[15,*,*])
+offset = 83
 FOR i=0, 109 DO BEGIN &$
 	print, i &$
 	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
         IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
         IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
 	temp = fit_model_temp &$
-	temp2 = REFORM(temp[15, *,*]) &$
 	FOR f=0, 449 DO BEGIN &$
 		pix_x = f &$
 		pix_y = offset + f &$
 		angle_slice_tau_against_time[f,*,i] = temp[*, pix_x, pix_y] &$
-		temp2[f, offset+f] = 1000
+		line_of_slice[pix_x, pix_y] = 4000
 ENDFOR
 	
 xstepper, angle_slice_tau_against_time, xsize=1900, ysize=500
@@ -259,6 +260,106 @@ image2 = marked_sub_scan[*,*,75]
 FOR i=0, 400 DO BEGIN &$
 	image[i,i+85] = 1000 &$
 ENDFOR
+SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/slice_403_546_45deg.sav', line_of_slice, angle_slice_tau_against_time
+
+write_png, '/home/40147775/msci/figs/test1.png', line_of_slice
+
+; ######################################################################################################
+; 	Shock vertical propagation, from 73 on
+; ######################################################################################################
+vertical_slice_tau_against_time = fltarr(551, 75, 110)
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0077.sav'
+line_of_slice = REFORM(fit_model_temp[15,*,*])
+x_value = 178
+FOR i=0, 109 DO BEGIN &$
+	print, i &$
+	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
+	tau_and_x_slice = TRANSPOSE(REFORM(fit_model_temp[*,x_value,*])) &$
+	vertical_slice_tau_against_time[*,*,i] = tau_and_x_slice[*,*] &$
+ENDFOR
+line_of_slice[x_value, *] = 4000
+
+tvim, line_of_slice
+xstepper, vertical_slice_tau_against_time[*,0:20, *], xsize=1900, ysize=500
 
 
+;#####################################################################################################
+; 			Temperature - Intensity Comparison for a single time frame
+; ####################################################################################################
+; 77th time step, 10th depthscale step, one in temperature, one in intensity
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/common_vars.sav'
+
+x_and_y_against_time = fltarr(551,551,110)
+FOR i=0, 109 DO BEGIN &$
+	print, i &$
+	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
+	x_and_y_against_time[*,*,i] = fit_model_temp[10,*,*] &$
+ENDFOR
+
+temp_frame77 = x_and_y_against_time[*,*,*]
+intensity_frame77 = marked_sub_scan[200:750, 260:810, 0:110]
+
+
+FOR i=0, 109 DO BEGIN &$
+	window,0,xsize=700,ysize=700,/pixmap &$
+	!p.background = 255 &$
+	!p.color = 0 &$
+	loadct, 5, /silent &$
+	frame = temp_frame77[*,*,i] &$
+	frame2 = intensity_frame77[*,*,i] &$
+	tvim, frame &$
+	contour, frame, levels=[50,100], /over, color='red' &$
+	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
+        IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
+        IF (i gt 99) THEN name = arr2str(i, /trim) &$
+	write_png, '/home/40147775/msci/inversion_data/my_sav_files/temp_frame77/img'+ name + '.png', tvrd(/true) &$
+	loadct, 0, /silent &$
+	tvim, frame2 &$
+	write_png, '/home/40147775/msci/inversion_data/my_sav_files/intensity_frame77/img'+ name + '.png', tvrd(/true) &$
+
+ENDFOR
+
+ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
+  -c:v libx264 -pix_fmt yuv420p temp_frame_77.mp4
+
+; #####################################################################################################
+; 		Time frame 41 - determining temperature height of first shock event
+; ####################################################################################################
+
+RESTORE, 'inversion_burst_0041.sav'
+x_and_y_over_tau = fltarr(551,551,75)
+FOR i=0, 74 DO BEGIN &$
+	frame = reform(fit_model_temp[i,*,*]) &$
+	x_and_y_over_tau[*,*,i] = frame[*,*] &$
+ENDFOR
+
+; #####################################################################################################
+; 			Time frame 74 - determining temperature height of the shock
+; ####################################################################################################
+
+RESTORE, 'inversion_burst_0074.sav'
+x_and_y_over_tau74 = fltarr(551,551,75)
+FOR i=0, 74 DO BEGIN &$
+	frame = reform(fit_model_temp[i,*,*]) &$
+	x_and_y_over_tau74[*,*,i] = frame[*,*] &$
+ENDFOR
+; The intensity pattern is noticable eveywhere- the entire atmosphere in the is hotter than the 
+; surrounding area at the shock coordinates.
+
+; #####################################################################################################
+; 		Time frame 77 - determining temperature height the shock at the light bridge
+; ####################################################################################################
+
+RESTORE, 'inversion_burst_0077.sav'
+x_and_y_over_tau77 = fltarr(551,551,75)
+FOR i=0, 74 DO BEGIN &$
+	frame = reform(fit_model_temp[i,*,*]) &$
+	x_and_y_over_tau77[*,*,i] = frame[*,*] &$
+ENDFOR
+
+SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/shock77_the_golden_event.sav', x_and_y_over_tau74, x_and_y_over_tau77
 
