@@ -231,35 +231,34 @@ new_y = (500-(old_y-500)) - 260
 ; This needs changed of each and every different coordinate! The offset also needs moved to the 
 ; pix_y variable if the y ordinate is larger than the x ordinate.
 
-angle_slice_tau_against_time = fltarr(500, 75, 110)
-offset = 11
+angle_slice_tau_against_time = fltarr(450, 75, 110)
+offset = 85
 FOR i=0, 109 DO BEGIN &$
 	print, i &$
 	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
         IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
         IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
 	temp = fit_model_temp &$
-	FOR f=0, 499 DO BEGIN &$
-		pix_x = offset + f &$
-		pix_y = f &$
+	temp2 = REFORM(temp[15, *,*]) &$
+	FOR f=0, 449 DO BEGIN &$
+		pix_x = f &$
+		pix_y = offset + f &$
 		angle_slice_tau_against_time[f,*,i] = temp[*, pix_x, pix_y] &$
+		temp2[f, offset+f] = 1000
 ENDFOR
 	
-xstepper, angle_slice_tau_against_time, xsize=1900, ysize=300
+xstepper, angle_slice_tau_against_time, xsize=1900, ysize=500
+test = angle_slice_tau_against_time
+test[203, *, *] = 6000
+xstepper, test, xsize=1900, ysize=500
 
-RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0075.sav'
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0041.sav'
 
 image = REFORM(fit_model_temp[40,*,*])
 image2 = marked_sub_scan[*,*,75]
 FOR i=0, 400 DO BEGIN &$
-	image[i,i+89] = 1000 &$
+	image[i,i+85] = 1000 &$
 ENDFOR
 
 
-image = fit_model_temp[15,*,*]
-image[1, 250, 10] = 1000
-
-
-arr = fltarr(1,10,10)
-arr[*,1,*] = 1
 
