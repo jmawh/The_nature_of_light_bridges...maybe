@@ -351,7 +351,7 @@ ENDFOR
 ; surrounding area at the shock coordinates.
 
 ; #####################################################################################################
-; 		Time frame 77 - determining temperature height the shock at the light bridge
+; 		Time frame 77/78 - determining temperature height the shock at the light bridge
 ; ####################################################################################################
 
 RESTORE, 'inversion_burst_0077.sav'
@@ -362,4 +362,26 @@ FOR i=0, 74 DO BEGIN &$
 ENDFOR
 
 SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/shock77_the_golden_event.sav', x_and_y_over_tau74, x_and_y_over_tau77
+
+
+RESTORE, 'inversion_burst_0078.sav'
+x_and_y_over_tau = fltarr(551,551,75)
+FOR i=0, 74 DO BEGIN &$
+	frame = reform(fit_model_temp[i,*,*]) &$
+	x_and_y_over_tau[*,*,i] = frame[*,*] &$
+ENDFOR
+
+xstepper, x_and_y_over_tau, xsize=700, ysize=700
+
+; #####################################################################################################
+; 			Time frame 96 - is there a temperature change?
+; ####################################################################################################
+
+RESTORE, 'inversion_burst_0096.sav'
+x_and_y_over_tau96 = fltarr(551,551,75)
+FOR i=0, 74 DO BEGIN &$
+	frame = reform(fit_model_temp[i,*,*]) &$
+	x_and_y_over_tau96[*,*,i] = frame[*,*] &$
+ENDFOR
+
 
