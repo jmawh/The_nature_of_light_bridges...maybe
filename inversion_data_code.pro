@@ -104,7 +104,7 @@ restore, '/home/40147775/msci/inversion_data/14Jul_Inv/nlte_temp_correction_all.
 ; /verbose yields depthscale (optical depths, tau) QS_corr, penumb_corr, umb_corr
 
  
-temp = fit_model_temp
+temp = fit_model_tempx
 ; pixel picked in the light bridge
 lb = REFORM(temp[*,210,276])
 lb_umbcorr = REFORM(temp[*,210,276])*umb_corr
@@ -363,15 +363,35 @@ ENDFOR
 
 SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/shock77_the_golden_event.sav', x_and_y_over_tau74, x_and_y_over_tau77
 
+xstepper, x_and_y_over_tau74, xsize=700, ysize=700
+xstepper, x_and_y_over_tau77, xsize=700, ysize=700
+
 
 RESTORE, 'inversion_burst_0078.sav'
-x_and_y_over_tau = fltarr(551,551,75)
+x_and_y_over_tau78 = fltarr(551,551,75)
 FOR i=0, 74 DO BEGIN &$
 	frame = reform(fit_model_temp[i,*,*]) &$
-	x_and_y_over_tau[*,*,i] = frame[*,*] &$
+	x_and_y_over_tau78[*,*,i] = frame[*,*] &$
 ENDFOR
 
-xstepper, x_and_y_over_tau, xsize=700, ysize=700
+xstepper, x_and_y_over_tau78, xsize=700, ysize=700
+
+; look at the lb at the pixels where it is hotter than the neighbourhood due to heating, frm 77
+; pixel coordinate: (209, 283) - fix y and run over x
+tau_and_x_against_time77 = fltarr(551, 75, 110)
+y_value = 283
+FOR i=0, 109 DO BEGIN &$
+	print, i &$
+	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
+	temp = fit_model_temp &$
+	tau_and_x_slice = TRANSPOSE(REFORM(temp[*,*,y_value])) &$
+	tau_and_x_against_time77[*,*,i] = tau_and_x_slice[*,*] &$
+ENDFOR
+	
+xstepper, tau_and_x_against_time77, xsize=1900, ysize=500
+
 
 ; #####################################################################################################
 ; 			Time frame 96 - is there a temperature change?
@@ -384,4 +404,75 @@ FOR i=0, 74 DO BEGIN &$
 	x_and_y_over_tau96[*,*,i] = frame[*,*] &$
 ENDFOR
 
+xstepper, x_and_y_over_tau96, xsize=700, ysize=700
+
+
+; Meeting with David, 15/11/18
+
+; Taking an average of temperature across the light bridge and plotting against time 
+; either with plot or tvim
+
+
+temperature_time = FLTARR(75, 16)
+left_of_lb = 206
+right_of_lb = 219
+FOR t = 0,15 DO BEGIN &$
+    temperature_slice = TAU_AND_X_AGAINST_TIME_276[left_of_lb:right_of_lb, *, t+70] &$
+    temperature_time[*,t] = REFORM(TOTAL(temperature_slice, 1) / n_elements(temperature_slice[*,t])) &$
+ENDFOR
+
+!p.background = 255
+!p.color = 0
+
+tvim, temperature_time, xtitle='Pseudo height, photosphere -> chromosphere', ytitle='time step ( 0 => 70th time step)'
+
+; This creates a plot of the temperature as a function of optical depth where time is represented by
+; the changing line colour.
+; The position of the line peak is the height of the temperature fluctuation.
+
+loadct, 0, /silent
+plot, depthscale, temperature_time[*,0], xst=1, thick=2, xtitle='Log(tau), left = chromosphere, right=photosphere'
+loadct, 5, /silent
+FOR i = 1, 15 DO oplot, depthscale,  temperature_time[*, i], thick=2, color=18*i
+
+; This is the same plot as above except that the x-axis has been cut down, removing part of
+; the photosphere           
+plot, depthscale[40:*], temperature_time[40:*,0], xst=1, yst=1, thick=2, yr=[3500, 5000] ,xtitle='Log(tau), left = chromosphere, right=photosphere', ytitle='~temperature'
+FOR i = 1, 15 DO oplot, depthscale[40:*], temperature_time[40:*, i], thick=2, color=17*i
+
+; this is still hard to see clearly: separate the lines
+
+plot, depthscale[40:*], temperature_time[40:*,0], xst=1, yst=1, thick=2, yr=[3500, 20000] ,xtitle='Log(tau), left = chromosphere, right=photosphere', ytitle='~temperature'
+FOR i = 1, 15 DO oplot, depthscale[40:*], temperature_time[40:*, i]+(1000*i), thick=2, color=17*i
+                                                                               
+tvim, temperature_time                                                                             
+
+tvim, ALOG10(temperature_time)
+tvim, ALOG10(temperature_time),/sc
+
+tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]
+tvim, ALOG10(temperature_time),/sc,range=[3.55,3.65]
+tvim,tau_and_x_against_time_276[*,*,77]                                                         
+oadct,5                               
+
+vim,tau_and_x_against_time_276[*,*,77]
+FOR i = 0,15 DO BEGIN &$                                                                        
+    temperature_slice = TAU_AND_X_AGAINST_TIME_276[206:208, *, i+70] &$                         
+    temperature_time[*,i] = REFORM(TOTAL(temperature_slice, 1) / 3.) &$                         
+ENDFOR                                                                
+tvim, ALOG10(temperature_time),/sc,range=[3.55,3.65]                   
+tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]
+plot, depthscale[40:*], temperature_time[40:*,0], xst=1, yst=1, thick=2, yr=[3500, 15000]      
+FOR i = 1, 15 DO oplot, depthscale[40:*],temperature_time[40:*, i]+(500*i), thick=2, color=17*i
+tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]                                           
+tvim, ROTATE(ALOG10(temperature_time),2),/sc,range=[3.55,3.75]
+tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]          
+tvim, ROTATE(ALOG10(temperature_time),2),/sc,range=[3.55,3.75]
+tvim, ROTATE(ALOG10(temperature_time),4),/sc,range=[3.55,3.75]
+tvim, ROTATE(ALOG10(temperature_time),5),/sc,range=[3.55,3.75]
+tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]          
+tvim, ROTATE(ALOG10(temperature_time),5),/sc,range=[3.55,3.75]
+
+
+; create a similar map for dopper shift - a grid, that can be compared directly to the temperature map
 
