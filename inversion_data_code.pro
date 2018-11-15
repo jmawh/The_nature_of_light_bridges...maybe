@@ -412,7 +412,8 @@ xstepper, x_and_y_over_tau96, xsize=700, ysize=700
 ; Taking an average of temperature across the light bridge and plotting against time 
 ; either with plot or tvim
 
-
+tvim,tau_and_x_against_time_276[*,*,77]
+; then run pick to get the left and right of the LB
 temperature_time = FLTARR(75, 16)
 left_of_lb = 206
 right_of_lb = 219
@@ -444,35 +445,32 @@ FOR i = 1, 15 DO oplot, depthscale[40:*], temperature_time[40:*, i], thick=2, co
 
 plot, depthscale[40:*], temperature_time[40:*,0], xst=1, yst=1, thick=2, yr=[3500, 20000] ,xtitle='Log(tau), left = chromosphere, right=photosphere', ytitle='~temperature'
 FOR i = 1, 15 DO oplot, depthscale[40:*], temperature_time[40:*, i]+(1000*i), thick=2, color=17*i
-                                                                               
-tvim, temperature_time                                                                             
-
-tvim, ALOG10(temperature_time)
+                                                                                                                                                          
+; Returning to the image of the temperature, filtering it more
 tvim, ALOG10(temperature_time),/sc
 
 tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]
-tvim, ALOG10(temperature_time),/sc,range=[3.55,3.65]
-tvim,tau_and_x_against_time_276[*,*,77]                                                         
-oadct,5                               
-
-vim,tau_and_x_against_time_276[*,*,77]
+                               
+; Averaging over only the first 3 pixels of the LB:
+temperature_time3 = fltarr(75,16)
 FOR i = 0,15 DO BEGIN &$                                                                        
     temperature_slice = TAU_AND_X_AGAINST_TIME_276[206:208, *, i+70] &$                         
-    temperature_time[*,i] = REFORM(TOTAL(temperature_slice, 1) / 3.) &$                         
+    temperature_time3[*,i] = REFORM(TOTAL(temperature_slice, 1) / 3.) &$                         
 ENDFOR                                                                
-tvim, ALOG10(temperature_time),/sc,range=[3.55,3.65]                   
-tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]
-plot, depthscale[40:*], temperature_time[40:*,0], xst=1, yst=1, thick=2, yr=[3500, 15000]      
-FOR i = 1, 15 DO oplot, depthscale[40:*],temperature_time[40:*, i]+(500*i), thick=2, color=17*i
-tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]                                           
-tvim, ROTATE(ALOG10(temperature_time),2),/sc,range=[3.55,3.75]
-tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]          
-tvim, ROTATE(ALOG10(temperature_time),2),/sc,range=[3.55,3.75]
-tvim, ROTATE(ALOG10(temperature_time),4),/sc,range=[3.55,3.75]
-tvim, ROTATE(ALOG10(temperature_time),5),/sc,range=[3.55,3.75]
-tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]          
-tvim, ROTATE(ALOG10(temperature_time),5),/sc,range=[3.55,3.75]
 
+plot, depthscale[40:*], temperature_time3[40:*,0], xst=1, yst=1, thick=2, yr=[3500, 15000]      
+FOR i = 1, 15 DO oplot, depthscale[40:*],temperature_time3[40:*, i]+(500*i), thick=2, color=17*i
+
+; image as is and then rotated to make it easier to understand
+tvim, ALOG10(temperature_time3),/sc,range=[3.55,3.75]                                                    
+tvim, ROTATE(ALOG10(temperature_time3),5),/sc,range=[3.55,3.75]
+; This last rotation shows clearly the heat entering at the top of the atmosphere and then 
+; subsequently sinking into the lower atmosphere over the following frames. This cut in 
+; particular has 3 separate examples of this. The next step is to explore doopler velocities 
+; for the same area.
 
 ; create a similar map for dopper shift - a grid, that can be compared directly to the temperature map
 
+
+; Conversion of optical depth to height in 
+RESTORE, '/home/40147775/msci/inversion_data/'
