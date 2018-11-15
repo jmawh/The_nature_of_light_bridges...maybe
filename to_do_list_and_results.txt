@@ -385,3 +385,15 @@ Speed of the shocks, get approximate speeds of the shocks associated with each
 	
 
 Does temperature affect the behaviour of the shock
+
+					Presentation Structure
+1. Introduction - historical investigations, motivations, what is currently unknown? (Interaction 
+   properties of the shocks with Lb and the effect on the LB - temperature changes etc). 
+   Time = 4 minutes
+
+2. Work carried out: took spectral data from ground based observation to get intensity measurements.
+   This could be used to ... It was also used to get doppler velocities... Inversions were then 
+   leveraged to explore the temperature regime of the observations etc. From this [...] was 
+   observed/discovered. Further analysis of [...] led to the conclusion that...
+
+3. Further work/if i had more time i would... 
