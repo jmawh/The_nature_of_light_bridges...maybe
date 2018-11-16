@@ -60,5 +60,5 @@ minrange=50, maxrange=5000, position=[x1+0.015,y1,x2+0.03,y2], /vertical, /right
 ticknames=tickmarknames, title=’Intensity (arb. units)’, font=-1
 
 device, /close
-IDL> set plot, ’x’
+set plot, ’x’
 
