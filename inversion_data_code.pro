@@ -411,7 +411,8 @@ xstepper, x_and_y_over_tau96, xsize=700, ysize=700
 
 ; Taking an average of temperature across the light bridge and plotting against time 
 ; either with plot or tvim
-
+RESTORE, '/home/40147775/msci/inversion_data/my_sav_files/uncorrected_first_analysis.sav'
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/nlte_temp_correction_all.sav'
 tvim,tau_and_x_against_time_276[*,*,77]
 ; then run pick to get the left and right of the LB
 temperature_time = FLTARR(75, 16)
@@ -470,7 +471,110 @@ tvim, ROTATE(ALOG10(temperature_time3),5),/sc,range=[3.55,3.75]
 ; for the same area.
 
 ; create a similar map for dopper shift - a grid, that can be compared directly to the temperature map
+; basically i need a LOS map for y=276, x=206-208 (averaged) from tiem steps 70-85. Hopefully at the 
+; time steps where the flow appears to be down, into the atmosphere will be same time steps as the 
+; red flow down in tvim, ROTATE(ALOG10(temperature_time3),5),/sc,range=[3.55,3.75].
+
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/wavelengths_original.sav'
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+los_vel_lb = fltarr(3)
+los_vel_avg = fltarr(111)
+FOR k = 0, 109 DO BEGIN &$ 
+	print, k &$
+	cube = readfits(data[k]) &$
+	los_vel_avg[k] = TOTAL(los_vel_lb)/n_elements(los_vel_lb) &$
+	FOR i=463, 465 DO BEGIN &$
+		pixel = cube[i,276,*] &$
+		pixel_profile = TOTAL(TOTAL(pixel,2),1) &$
+		pixel_fit = GAUSSFIT(wave, pixel_profile, pixel_coeff, ESTIMATES =[-1281.2, 8542.0, 0.197, -1272979.2, 193.3, -0.005]) &$
+		mean_pixel_fit = pixel_coeff[1] &$
+		d_lambda = mean_pixel_fit - 8542.01694 &$
+		x_val = i - 463 &$
+		dv = (d_lambda/8542.01694)*3.e5 &$
+		if (dv gt 10) then (dv = 10) &$
+		if (dv lt -10) then (dv = -10) &$
+		los_vel_lb[x_val] = dv &$
+ENDFOR
+
+plot, los_vel_avg
+plot, los_vel_avg[70:85], xtitle='time step, starting at 70', ytitle='Doppler velocity, km/s'
+
+; Creating a figure comparing the DV to the temperature
+cutdown_temp3 = temperature_time3[50:*, *]
+log_temp_time3 = ALOG10(cutdown_temp3)
+log_temp_time3 = ROTATE(log_temp_time3, 5)
+tvim, log_temp_time3, xtitle='Atmosphere, left = toward chromosphere, right = toward photosphere', ytitle='Time Step'
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/los_lb.eps'
+!p.background = 255
+!p.color = 0
+plot, los_vel_avg[70:85], xtitle='time step, starting at 70', ytitle='Doppler velocity, km/s'
+device, /close
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/log_temp_time3.eps', /color
+loadct, 3
+!p.background = 255
+!p.color = 0
+tvim, log_temp_time3, /sc, xtitle='Pseudo optical height', ytitle='time'
+device, /close
+set_plot, 'x'
+
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/temp_with_los.eps', /color
+loadct, 3
+!p.background = 255
+!p.color = 0
+tvim, rotate(log_temp_time3,3), xtitle='Time Step', ytitle='Pseudo optical height'
+loadct, 20
+oplot, findgen(16), (los_vel_avg[70:85]*7)+8, thick=2
+loadct, 3
+axis, yaxis=1, YTITLE='LOS Vel',ystyle=1,YRANGE = (!Y.CRANGE)/12
+device, /close
+set_plot, 'x'
+
 
 
 ; Conversion of optical depth to height in 
-RESTORE, '/home/40147775/msci/inversion_data/'
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/mackkl_m.sav', /verbose
+
+density_m = mackkl_m.nhtot * 1.67E-27 * (100.)^3.
+temp_m = mackkl_m.t
+field_m  = SQRT(8. * !pi * mackkl_m.ptot)
+height_m = mackkl_m.h
+optical_depth_m = mackkl_m.tau5
+
+th_fit = POLY_FIT(height_m,temp_m ,10)
+
+; testing the fit
+g = findgen(2249)
+h = g - 122
+
+fit_h_t = fltarr(8900)
+FOR i=0,2248 DO BEGIN &$
+	fit_h_t[i] = th_fit[0] + th_fit[1]*h[i] + th_fit[2]*h[i]^2 + th_fit[3]*h[i]^3 + th_fit[4]*h[i]^4 + th_fit[5]*h[i]^5 + th_fit[6]*h[i]^6 + th_fit[7]*h[i]^7 + th_fit[8]*h[i]^8 + th_fit[9]*h[i]^9 + th_fit[10]*h[i]^10  &$
+ENDFOR
+
+plot, h, fit_h_t ; plotting the fitted height against the temperature
+oplot, height_m, temp_m, color='120' ; overplotting the actual function in red
+; This serves as a good fit below ~1800km 
+
+
+oh_fit = POLY_FIT(optical_depth_m, height_m, 10)
+; testing the fit
+g = findgen(1140, increment=0.01)
+h = g - 10
+h = 10^(h)
+fit_od_h = fltarr(1140)
+FOR i=0,1139 DO BEGIN &$
+	fit_od_h[i] = oh_fit[0] + oh_fit[1]*h[i] + oh_fit[2]*h[i]^2 + oh_fit[3]*h[i]^3 + oh_fit[4]*h[i]^4 + oh_fit[5]*h[i]^5 + oh_fit[6]*h[i]^6 + oh_fit[7]*h[i]^7 + oh_fit[8]*h[i]^8 + oh_fit[9]*h[i]^9  &$
+ENDFOR
+
+plot, h, fit_od_h
+oplot, optical_depth_m, height_m, color='120'
+
+
+
+
