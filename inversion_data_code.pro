@@ -561,20 +561,27 @@ plot, h, fit_h_t ; plotting the fitted height against the temperature
 oplot, height_m, temp_m, color='120' ; overplotting the actual function in red
 ; This serves as a good fit below ~1800km 
 
-
-oh_fit = POLY_FIT(optical_depth_m, height_m, 10)
+; Finding a fit for height as a function of the log of optical depth:
+log_optical_depth_m = ALOG10(optical_depth_m)
+oh_fit = POLY_FIT(log_optical_depth_m, height_m, 25)
 ; testing the fit
 g = findgen(1140, increment=0.01)
 h = g - 10
-h = 10^(h)
 fit_od_h = fltarr(1140)
+fit_od_h_i = fltarr(51)
+
 FOR i=0,1139 DO BEGIN &$
-	fit_od_h[i] = oh_fit[0] + oh_fit[1]*h[i] + oh_fit[2]*h[i]^2 + oh_fit[3]*h[i]^3 + oh_fit[4]*h[i]^4 + oh_fit[5]*h[i]^5 + oh_fit[6]*h[i]^6 + oh_fit[7]*h[i]^7 + oh_fit[8]*h[i]^8 + oh_fit[9]*h[i]^9  &$
+	fit_od_h[i] = TOTAL(fit_od_h_i) &$
+	FOR j=0, 25 DO BEGIN &$
+	fit_od_h_i[j] = oh_fit[j] * h[i]^j  &$
 ENDFOR
+plot, log_optical_depth_m, height_m
+oplot, h, fit_od_h, color='120'
+; This fit is far from perfect, it completely breaks at very low values of log_optical_depth_m. 
+; However it is sufficient for my purposes since it is an acceptable fit down to log(tau) = -6
+; which is the lowest value in the data set.
 
-plot, h, fit_od_h
-oplot, optical_depth_m, height_m, color='120'
 
-
-
+; saving out the fitted variables
+SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/conversions.sav', fit_h_t, fit_od_h
 
