@@ -583,5 +583,6 @@ oplot, h, fit_od_h, color='120'
 
 
 ; saving out the fitted variables
-SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/conversions.sav', fit_h_t, fit_od_h
+SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/conversions.sav', fit_h_t, fit_od_h, oh_fit, th_fit
+
 
