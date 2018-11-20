@@ -499,7 +499,9 @@ ENDFOR
 plot, los_vel_avg
 plot, los_vel_avg[70:85], xtitle='time step, starting at 70', ytitle='Doppler velocity, km/s'
 
+;#####################################################################################################
 ; Creating a figure comparing the DV to the temperature
+;#####################################################################################################
 cutdown_temp3 = temperature_time3[50:*, *]
 log_temp_time3 = ALOG10(cutdown_temp3)
 log_temp_time3 = ROTATE(log_temp_time3, 5)
@@ -584,5 +586,69 @@ oplot, h, fit_od_h, color='120'
 
 ; saving out the fitted variables
 SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/conversions.sav', fit_h_t, fit_od_h, oh_fit, th_fit
+
+; ######################################################################################################
+; 	Turning the conversions into routines
+; ######################################################################################################
+
+; This function is a bit long and has numerical values where instead they could be called from
+; a sav file however this means the code can later be used by anyone, even without the sav file.
+; Alternatively the files are saved in conversions.sav
+
+FUNCTION OD_TO_HEIGHT, x
+	coeff = [7.1475964, -114.84059, -59.765961, 56.392883, 103.45804, $
+      		 -17.811371, -56.965546, -13.085274, 7.4847431, 4.1276894, $
+                 0.62685931, -0.010470539, -0.0097609535, -0.00038388267, 5.8086371e-06,$
+                 -7.4927193e-06, -5.0584674e-07, 1.5012848e-08, 6.6001649e-10, -1.4498822e-10,$
+                 -7.4073955e-11, -6.6161486e-12, -1.1637715e-13, 4.3538225e-14, 2.6420194e-15,$
+                 -1.9521756e-16]
+		partial_sum = fltarr(26)
+	FOR j=0, 25 DO BEGIN &$
+		partial_sum[j] = fit_coeff[j] * (optical_depth)^j &$
+
+	RETURN, height
+END
+; This ^ doesn't work yet - I'll have another go when I've some more important things done.
+
+
+; #########################################################################################################
+; 			Interpolating until the fancy function works
+; #########################################################################################################
+
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/mackkl_m.sav', /verbose
+
+density_m = mackkl_m.nhtot * 1.67E-27 * (100.)^3.
+temp_m = mackkl_m.t
+field_m  = SQRT(8. * !pi * mackkl_m.ptot)
+height_m = mackkl_m.h
+optical_depth_m = mackkl_m.tau5
+
+x_out = findgen(1140)
+x_out = x_out/100
+x_out = x_out - 10
+
+od_h = interpol(height_m, ALOG10(optical_depth_m), x_out)
+
+loadct, 5
+!p.background=255
+!p.color=0
+plot, ALOG10(optical_depth_m), height_m, xtitle='Log of Optical Depth', ytitle='Height /Km', title= 'Log of Optical Depth against Height'
+oplot, x_out, od_h, color = '120'
+
+; so now od_h holds all the values of optical depth from -10 to 1.4, simply subset as necessary for
+; plot etc
+
+x_out2 = findgen(2249)
+x_out2 = x_out2 - 122
+
+tp_h = interpol(temp_m, height_m, x_out2)
+
+plot, height_m, temp_m, xtitle='Height /Km', ytitle='Temperature /K', title= 'Temperature against Height'
+oplot, x_out2, tp_h, color='120'
+
+; So now optical depth can be replaced with a height.
+
+
+
 
 
