@@ -712,5 +712,7 @@ tvim, ALOG10(tau_and_x_event_70[*,*,73]), /sc
 loadct, 3
 xstepper, ALOG10(tau_and_x_event_70)>3.55<3.75, xsize=1900, ysize=500
 
-; watch from 73 for first shock, from 90 for second shock
+; watch from 73 for first shock, from 90 for second shock.
+; It might be possible to make this even better with a 45 degree angle for the frame 90 event - 
+; that ought to be more conclusive. The sae coordinate should be fine.
 
