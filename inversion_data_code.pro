@@ -499,8 +499,29 @@ ENDFOR
 plot, los_vel_avg
 plot, los_vel_avg[70:85], xtitle='time step, starting at 70', ytitle='Doppler velocity, km/s'
 
+; ##################################################################################################
+;	 Temperature map as above but for the event frame 90 on
+; ###################################################################################################
+RESTORE, '/home/40147775/msci/inversion_data/my_sav_files/uncorrected_first_analysis.sav'
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/nlte_temp_correction_all.sav'
+
+temperature_time_90 = FLTARR(75, 16)
+left_of_lb = 206
+right_of_lb = 209
+FOR t = 0,15 DO BEGIN &$
+    temperature_slice = TAU_AND_X_AGAINST_TIME_276[left_of_lb:right_of_lb, *, t+90] &$
+    temperature_time_90[*,t] = REFORM(TOTAL(temperature_slice, 1) / n_elements(temperature_slice[*,t])) &$
+ENDFOR
+
+!p.background = 255
+!p.color = 0
+
+tvim, temperature_time_90, xtitle='Pseudo height, photosphere -> chromosphere', ytitle='time step ( 0 => 70th time step)'
+
+tvim, ALOG10(temperature_time_90)[0:30, *],/sc,range=[3.55,3.75]
+
 ;#####################################################################################################
-; Creating a figure comparing the DV to the temperature
+; Creating a figure comparing the Doppler velocity to the temperature - 77 event
 ;#####################################################################################################
 cutdown_temp3 = temperature_time3[50:*, *]
 log_temp_time3 = ALOG10(cutdown_temp3)
@@ -537,6 +558,27 @@ axis, yaxis=1, YTITLE='LOS Vel',ystyle=1,YRANGE = (!Y.CRANGE)/12
 device, /close
 set_plot, 'x'
 
+;#####################################################################################################
+; Creating a figure comparing the Doppler velocity to the temperature - 90 event
+;#####################################################################################################
+cutdown_temp_90 = temperature_time_90[50:*, *]
+log_temp_time_90 = ALOG10(cutdown_temp_90)
+log_temp_time_90 = ROTATE(log_temp_time_90, 5)
+tvim, log_temp_time_90, xtitle='Atmosphere, left = toward chromosphere, right = toward photosphere', ytitle='Time Step'
+
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/temp_with_los_frame_90.eps', /color
+loadct, 3
+!p.background = 255
+!p.color = 0
+tvim, rotate(log_temp_time_90,3), xtitle='Time Step', ytitle='Pseudo optical height'
+loadct, 20
+oplot, findgen(16), (los_vel_avg[90:105]*7)+8, thick=2
+loadct, 3
+axis, yaxis=1, YTITLE='LOS Vel',ystyle=1,YRANGE = (!Y.CRANGE)/12
+device, /close
+set_plot, 'x'
 
 
 ; Conversion of optical depth to height in 
@@ -649,6 +691,26 @@ oplot, x_out2, tp_h, color='120'
 ; So now optical depth can be replaced with a height.
 
 
+; #######################################################################################################
+;		Videos - one for the interaction(70), one for the lack of interaction (90) hopefully
+; #######################################################################################################
 
+tau_and_x_event_70 = fltarr(551, 75, 110)
+y_value = 286
+FOR i=0, 109 DO BEGIN &$
+	print, i &$
+	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
+	temp = fit_model_temp &$
+	tau_and_x_slice = TRANSPOSE(REFORM(temp[*,*,y_value])) &$
+	tau_and_x_event_70[*,*,i] = tau_and_x_slice[*,*] &$
+ENDFOR
+loadct, 5
+xstepper, ALOG10(tau_and_x_event_70), xsize=1900, ysize=500
+tvim, ALOG10(tau_and_x_event_70[*,*,73]), /sc
+loadct, 3
+xstepper, ALOG10(tau_and_x_event_70)>3.55<3.75, xsize=1900, ysize=500
 
+; watch from 73 for first shock, from 90 for second shock
 
