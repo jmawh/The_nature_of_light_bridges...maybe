@@ -692,7 +692,7 @@ oplot, x_out2, tp_h, color='120'
 
 
 ; #######################################################################################################
-;		Videos - one for the interaction(70), one for the lack of interaction (90) hopefully
+;		Cubes - one for the interaction(70), one for the lack of interaction (90)
 ; #######################################################################################################
 
 tau_and_x_event_70 = fltarr(551, 75, 110)
@@ -714,5 +714,90 @@ xstepper, ALOG10(tau_and_x_event_70)>3.55<3.75, xsize=1900, ysize=500
 
 ; watch from 73 for first shock, from 90 for second shock.
 ; It might be possible to make this even better with a 45 degree angle for the frame 90 event - 
-; that ought to be more conclusive. The sae coordinate should be fine.
+; that ought to be more conclusive. The same coordinates should be fine.
+
+; Trying for a 45 degree view of the frame 90 event.
+
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0090.sav' ; arbitary
+angle_slice_tau_90 = fltarr(450, 75, 110)
+line_of_slice_90 = REFORM(fit_model_temp[15,*,*])
+offset = 83 									 ; should be fine
+FOR i=0, 109 DO BEGIN &$
+	print, i &$
+	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
+	temp = fit_model_temp &$
+	FOR f=0, 449 DO BEGIN &$
+		pix_x = f &$
+		pix_y = offset + f &$
+		angle_slice_tau_90[f,*,i] = temp[*, pix_x, pix_y] &$
+		line_of_slice_90[pix_x, pix_y] = 4000
+ENDFOR
+
+tvim, line_of_slice_90
+xstepper, ALOG10(angle_slice_tau_90)>3.55<3.75, xsize=1900, ysize=500
+lb_bold = angle_slice_tau_90
+lb_bold[203, *, *] = 6000
+xstepper, lb_bold, xsize=1900, ysize=500
+
+; betwee these two one can see the movement of the event at frame 90 ish.
+
+; #####################################################################################################
+;				Upgrading the plots with useful axis
+; #####################################################################################################
+; 1 pixel = 0.097 arcsec, 1 arcsec = 725 km 
+; => 1 pixel = 70.327km
+; => data set spans 551*70.327 = 38750.1 km = 38.75 Mm
+
+; values from conversions
+tvim, ALOG10(tau_and_x_event_70[*,*,10])>3.55<3.75 , xtitle='Distance / Mm', xrange=[0,38.75], yrange=[-130, 1860], ytitle='Geometric Height / km'
+
+tvim, angle_slice_tau_90[*,*,10] , xtitle='Distance / Mm', xrange=[0,31.6], yrange=[-130, 1860], ytitle='Geometric Height / km'
+; #########################################################################################################
+;			Saving out these files as pngs to be turned into videos later
+; #########################################################################################################
+
+; Start with the slice acorss x for fixed y:
+FOR i=0, 109 DO BEGIN &$
+	window,0,xsize=1900,ysize=500,/pixmap &$
+	!p.background = 255 &$
+	!p.color = 0 &$
+	loadct, 5, /silent &$
+	frame = tau_and_x_event_70[*,*,i] &$
+	tvim, ALOG10(frame)>3.55<3.75, xtitle='Distance / Mm', xrange=[0,38.75], yrange=[-130, 1860], ytitle='Geometric Height / km' &$
+	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
+        IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
+        IF (i gt 99) THEN name = arr2str(i, /trim) &$
+	write_png, '/home/40147775/msci/figs/tau_and_x_event_70/img'+ name + '.png', tvrd(/true) &$
+ENDFOR
+
+; Now the 45 degree one
+FOR i=0, 109 DO BEGIN &$
+	window,0,xsize=1900,ysize=500,/pixmap &$
+	!p.background = 255 &$
+	!p.color = 0 &$
+	loadct, 5, /silent &$
+	frame = angle_slice_tau_90[*,*,i] &$
+	tvim, ALOG10(frame)>3.55<3.75, xtitle='Distance / Mm', xrange=[0,31.6], yrange=[-130, 1860], ytitle='Geometric Height / km' &$
+	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
+        IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
+        IF (i gt 99) THEN name = arr2str(i, /trim) &$
+	write_png, '/home/40147775/msci/figs/angle_slice_tau_90/img'+ name + '.png', tvrd(/true) &$
+ENDFOR
+
+; #######################################################################################################
+; 				Above images to video	(ran in folder)	
+; #######################################################################################################
+; adaptable frame rate, no filling in:
+
+ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
+  -c:v libx264 -pix_fmt yuv420p event_70_90_lb_interaction.mp4
+
+ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
+  -c:v libx264 -pix_fmt yuv420p event_90_angle_lb_interaction.mp4
+
+
+
+
 
