@@ -792,12 +792,55 @@ ENDFOR
 ; adaptable frame rate, no filling in:
 
 ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
-  -c:v libx264 -pix_fmt yuv420p event_70_90_lb_interaction.mp4
+  -c:v libx264 -pix_fmt yuv420p event_70_90_lb_interaction_final.mp4
 
 ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
-  -c:v libx264 -pix_fmt yuv420p event_90_angle_lb_interaction.mp4
+  -c:v libx264 -pix_fmt yuv420p event_90_angle_lb_interaction_final.mp4
 
 
+; #####################################################################################################
+;		Looking at another collison event 41 - similariaties with 77?
+; #####################################################################################################
 
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0041.sav' ; arbitary
+angle_slice_tau_41 = fltarr(450, 75, 110)
+line_of_slice_41 = REFORM(fit_model_temp[15,*,*])
+offset = 83 									 ; should be fine
+FOR i=0, 109 DO BEGIN &$
+	print, i &$
+	IF (i le 9) THEN RESTORE, 'inversion_burst_000'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 9) AND (i le 99) THEN RESTORE, 'inversion_burst_00'+ arr2str(i, /trim) + '.sav' &$
+        IF (i gt 99) THEN RESTORE, 'inversion_burst_0'+ arr2str(i, /trim) + '.sav' &$
+	temp = fit_model_temp &$
+	FOR f=0, 449 DO BEGIN &$
+		pix_x = f &$
+		pix_y = offset + f &$
+		angle_slice_tau_41[f,*,i] = temp[*, pix_x, pix_y] &$
+		line_of_slice_41[pix_x, pix_y] = 4000
+ENDFOR
+
+!p.background = 255
+!p.color = 0
+tvim, line_of_slice_41
+xstepper, ALOG10(angle_slice_tau_41)>3.55<3.75, xsize=1900, ysize=500
+
+; saving this out 
+FOR i=0, 109 DO BEGIN &$
+	window,0,xsize=1900,ysize=500,/pixmap &$
+	!p.background = 255 &$
+	!p.color = 0 &$
+	loadct, 5, /silent &$
+	frame = angle_slice_tau_41[*,*,i] &$
+	tvim, ALOG10(frame)>3.55<3.75, xtitle='Distance / Mm', xrange=[0,31.6], yrange=[-130, 1860], ytitle='Geometric Height / km' &$
+	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
+        IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
+        IF (i gt 99) THEN name = arr2str(i, /trim) &$
+	write_png, '/home/40147775/msci/figs/angle_slice_tau_41/img'+ name + '.png', tvrd(/true) &$
+ENDFOR
+
+; ran in folder on png's
+ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
+  -c:v libx264 -pix_fmt yuv420p event_41_angle_lb_interaction_final.mp4
+; video produced
 
 
