@@ -843,4 +843,77 @@ ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
   -c:v libx264 -pix_fmt yuv420p event_41_angle_lb_interaction_final.mp4
 ; video produced
 
+; #################################################################################################
+; 					Presentation specific plots
+; ###############################################################################################
+;Intensity plots of the sunspot
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+cube = readfits(data[30])
+frame = cube[*,*,5] 
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/sunspot_photosphere.eps'
+!p.background = 255
+!p.color = 0
+loadct, 3, /silent
+;aia_lct, r, g, b, wavelnth=’171’, /load
+tvim,frame, xtitle='Distance / Mm', xrange=[0,70], yrange=[0, 70], ytitle='Distance / Mm',pcharsize=10, lcharsize=15
+device, /close
+set_plot, 'x'
+
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+cube = readfits(data[30])
+frame = cube[*,*,15] 
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/sunspot_chromosphere.eps'
+!p.background = 255
+!p.color = 0
+loadct, 3, /silent
+;aia_lct, r, g, b, wavelnth=’171’, /load
+tvim,frame, xtitle='Distance / Mm', xrange=[0,70], yrange=[0, 70], ytitle='Distance / Mm',pcharsize=10, lcharsize=15
+device, /close
+set_plot, 'x'
+
+
+; Temperature plots (having ran above)
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0001.sav'
+temp = fit_model_temp
+frame = temp[5,*,*]
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/sunspot_temperature_photosphere.eps'
+!p.background = 255
+!p.color = 0
+loadct, 3, /silent
+;aia_lct, r, g, b, wavelnth=’171’, /load
+tvim,frame, xtitle='Distance / Mm', xrange=[0,30], yrange=[0, 30], ytitle='Distance / Mm',pcharsize=10, lcharsize=15, title='Sunspot Temperature in the Photosphere'
+device, /close
+set_plot, 'x'
+
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0001.sav'
+temp = fit_model_temp
+frame = temp[60,*,*]
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/sunspot_temperature_chromosphere.eps'
+!p.background = 255
+!p.color = 0
+loadct, 3, /silent
+;aia_lct, r, g, b, wavelnth=’171’, /load
+tvim,frame, xtitle='Distance / Mm', xrange=[0,30], yrange=[0, 30], ytitle='Distance / Mm',pcharsize=10, lcharsize=15, title='Sunspot Temperature in the Chromosphere'
+device, /close
+set_plot, 'x'
+
+; Spectra example
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/wavelengths_original.sav'
+cube = readfits(data[30])
+subcube = cube[500:505, 850:855, *]
+spectra = total(total(subcube,2),1)/36
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/spectra_example.eps'
+loadct, 0, /silent
+!p.background = 255 
+!p.color = 0 
+plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X)', ytitle = 'Intensity', xcharsize=10, ycharsize=10, position=[0.2,0.2,0.8,0.8]
+device, /close
+set_plot, 'x'
+
 
