@@ -884,7 +884,7 @@ device, filename='/home/40147775/msci/figs/sunspot_temperature_photosphere.eps'
 !p.color = 0
 loadct, 3, /silent
 ;aia_lct, r, g, b, wavelnth=’171’, /load
-tvim,frame, xtitle='Distance / Mm', xrange=[0,30], yrange=[0, 30], ytitle='Distance / Mm',pcharsize=10, lcharsize=15, title='Sunspot Temperature in the Photosphere'
+tvim,frame, xtitle='Distance / Mm', xrange=[0,40], yrange=[0, 40], ytitle='Distance / Mm',pcharsize=10, lcharsize=15, title='Sunspot Temperature in the Photosphere'
 device, /close
 set_plot, 'x'
 
@@ -897,7 +897,7 @@ device, filename='/home/40147775/msci/figs/sunspot_temperature_chromosphere.eps'
 !p.color = 0
 loadct, 3, /silent
 ;aia_lct, r, g, b, wavelnth=’171’, /load
-tvim,frame, xtitle='Distance / Mm', xrange=[0,30], yrange=[0, 30], ytitle='Distance / Mm',pcharsize=10, lcharsize=15, title='Sunspot Temperature in the Chromosphere'
+tvim,frame, xtitle='Distance / Mm', xrange=[0,40], yrange=[0, 40], ytitle='Distance / Mm',pcharsize=10, lcharsize=15, title='Sunspot Temperature in the Chromosphere'
 device, /close
 set_plot, 'x'
 
@@ -915,5 +915,25 @@ loadct, 0, /silent
 plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X)', ytitle = 'Intensity', xcharsize=10, ycharsize=10, position=[0.2,0.2,0.8,0.8]
 device, /close
 set_plot, 'x'
+
+; Shock propagation
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/common_vars.sav'
+xsteppper, marked_sub_scan, xsize=700, ysize=700
+; frames 14,18,20 left umbra
+tvim, marked_sub_scan[*,*,14]
+; x ordinate from 297 to 397, y from 484 to 584
+tvim, sub_scans_300[301:401,484:584,14]
+; Take 4 images, frame 14,16,18,20:
+
+frame = sub_scans_300[301:401,484:584,20]
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/shock_frame_20.eps'
+!p.background = 255
+!p.color = 0
+loadct, 0, /silent
+tvim,frame, xtitle='Distance / Mm', xrange=[0,7], yrange=[0, 7], ytitle='Distance / Mm',pcharsize=2, lcharsize=2, title='Shock Propagation'
+device, /close
+set_plot, 'x'
+
 
 
