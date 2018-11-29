@@ -935,5 +935,41 @@ tvim,frame, xtitle='Distance / Mm', xrange=[0,7], yrange=[0, 7], ytitle='Distanc
 device, /close
 set_plot, 'x'
 
+; example x against tau in temperature
+loadct, 3
+frame = tau_and_x_event_70[*,*,73]
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/presentation_figs/temperature_inversion.eps'
+!p.background = 255
+!p.color = 0
+loadct, 3, /silent
+tvim, frame, xtitle='Distance / Mm', xrange=[0,40], yrange=[-130, 1860], ytitle='Height / km', title='Temperature Inversion Example',pcharsize=1, lcharsize=1
+device, /close
+set_plot, 'x'
+
+window,0,xsize=1900,ysize=500,/pixmap 
+!p.background = 255 
+!p.color = 0 
+loadct, 3, /silent 
+frame = angle_slice_tau_41[*,*,i] 
+tvim, ALOG10(frame)>3.55<3.75, xtitle='Distance / Mm', xrange=[0,40], yrange=[-130, 1860], ytitle='Geometric Height / km' 
+write_png, '/home/40147775/msci/figs/presentation_figs/please_work.png', tvrd(/true) 
+
+; ##########################################################################################################
+; converting to png
+; #########################################################################################################
+
+convert sunspot_chromosphere.eps sunspot_chromosphere.png
+convert sunspot_photosphere.eps sunspot_photosphere.png
+convert spectra_example.eps spectra_example.png
+convert sunspot_temperature_chromosphere.eps sunspot_temperature_chromosphere.png
+convert sunspot_temperature_photosphere.eps sunspot_temperature_photosphere.png
+convert shock_frame_14.eps shock_frame_14.png
+convert shock_frame_16.eps shock_frame_16.png
+convert shock_frame_18.eps shock_frame_18.png
+convert shock_frame_20.eps shock_frame_20.png
+
+
+
 
 
