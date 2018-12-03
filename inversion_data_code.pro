@@ -856,9 +856,13 @@ device, filename='/home/40147775/msci/figs/sunspot_photosphere.eps'
 !p.color = 0
 loadct, 3, /silent
 ;aia_lct, r, g, b, wavelnth=’171’, /load
-tvim,frame, xtitle='Distance / Mm', xrange=[0,70], yrange=[0, 70], ytitle='Distance / Mm',pcharsize=10, lcharsize=15
+tvim, frame[*,*], xtitle='Distance / Mm', xrange=[0,70], yrange=[0, 70], ytitle='Distance / Mm', title='Intensity Plot of the Solar Photosphere', pcharsize=2, lcharsize=3
 device, /close
 set_plot, 'x'
+
+, xtitle='Distance / Mm', xrange=[0,70], yrange=[0, 70], ytitle='Distance / Mm',pcharsize=10, lcharsize=15
+
+
 
 data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
 cube = readfits(data[30])
@@ -908,13 +912,14 @@ cube = readfits(data[30])
 subcube = cube[500:505, 850:855, *]
 spectra = total(total(subcube,2),1)/36
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/spectra_example.eps'
+device, filename='/home/40147775/msci/figs/spectra_example_2.eps'
 loadct, 0, /silent
 !p.background = 255 
 !p.color = 0 
-plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X)', ytitle = 'Intensity', xcharsize=10, ycharsize=10, position=[0.2,0.2,0.8,0.8]
+plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X)', ytitle = 'Intensity', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=2, font=-1, title='Spectra Example for the Quiet Sun', xticks = 4
 device, /close
 set_plot, 'x'
+xcharsize=10, ycharsize=10, 
 
 ; Shock propagation
 RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/common_vars.sav'
@@ -969,6 +974,95 @@ convert shock_frame_16.eps shock_frame_16.png
 convert shock_frame_18.eps shock_frame_18.png
 convert shock_frame_20.eps shock_frame_20.png
 
+
+; Intensity plots for the presentation take 2
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+cube = readfits(data[30])
+image = cube[*,*,5] ; 5 for photosphere, 15 for chromosphere
+image_map = MAKE_MAP(image, xc=35.15, yc=35.15, dx=0.0703 , dy=0.0703 ); dx=100, dy=100, 
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/sunspot_photosphere_take_2.eps', /encapsulated, xsize=24, ysize=24, /tt_font, set_font='Times', font_size=16, /color, bits_per_pixel=8
+!p.background = 255
+!p.color = 0
+loadct, 3, /silent
+plot_map, image_map, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=2, charthick=2, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Distance (Mm)' , title='Intensity of the Solar Photosphere', xtickinterval=10, ytickinterval=10, position=[0.2,0.2,0.8,0.8]
+device, /close
+set_plot, 'x'
+
+; Temperature plots for presentation take 2
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0001.sav'
+temp = fit_model_temp
+image = temp[5,*,*] ; 5 for photosphere, 70 for chromosphere
+image = reform(image)
+image_map = make_map(image, dx =0.0703 , dy=0.0703 , xc =19.4 - (0.5*0.0703), yc =19.4 - (0.5*0.0703))
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/sunspot_photosphere_temp_2.eps', /encapsulated, xsize=24, ysize=24, /tt_font, set_font='Times', font_size=14, /color, bits_per_pixel=8
+!p.background = 255
+!p.color = 0
+loadct, 5, /silent
+plot_map, image_map, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=2, charthick=2, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Distance (Mm)' , title='Temperature of the Solar Photosphere', xtickinterval=10, ytickinterval=10, position=[0.2,0.2,0.8,0.8]
+device, /close
+set_plot, 'x'
+
+
+; Converting to high quality png:
+convert -density 300 sunspot_chromosphere_take_2.eps -resize 1024x1024 sunspot_chromosphere_take_2.png
+; then replace the transparent background with white:
+convert - flatten image.png, image.png
+
+
+; rms scan saved out as pngs to turn into a video
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/common_vars.sav', /verbose
+FOR i=0, 109 DO BEGIN &$
+	window,0,xsize=1000,ysize=1000,/pixmap &$
+	!p.background = 255 &$
+	!p.color = 0 &$
+	loadct, 0, /silent &$
+	frame = sub_scans_300[*,*,i] &$
+	tvim, frame, xtitle='Distance / Mm', xrange=[0,70], ytitle='Distance / Mm', yrange=[0,70] &$
+	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
+        IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
+        IF (i gt 99) THEN name = arr2str(i, /trim) &$
+	write_png, '/home/40147775/msci/figs/rms_scan/img'+ name + '.png', tvrd(/true) &$
+ENDFOR
+
+ffmpeg -framerate 15 -pattern_type glob -i '*.png' \
+  -c:v libx264 -pix_fmt yuv420p rms_scan.mp4
+
+; zoomed in rms sub scan
+FOR i=0, 109 DO BEGIN &$
+	window,0,xsize=1000,ysize=1000,/pixmap &$
+	!p.background = 255 &$
+	!p.color = 0 &$
+	loadct, 0, /silent &$
+	frame = sub_scans_300[200:750,260:810,i] &$
+	tvim, frame, xtitle='Distance / Mm', xrange=[0,40], ytitle='Distance / Mm', yrange=[0,40] &$
+	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
+        IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
+        IF (i gt 99) THEN name = arr2str(i, /trim) &$
+	write_png, '/home/40147775/msci/figs/rms_scan_zoom/img'+ name + '.png', tvrd(/true) &$
+ENDFOR
+
+ffmpeg -framerate 4 -pattern_type glob -i '*.png' \
+  -c:v libx264 -pix_fmt yuv420p rms_scan_zoom.mp4
+
+; time cube 15 for video conversion:
+
+FOR i=0, 109 DO BEGIN &$
+	window,0,xsize=1000,ysize=1000,/pixmap &$
+	!p.background = 255 &$
+	!p.color = 0 &$
+	loadct, 0, /silent &$
+	frame = time_cube_15[*,*,i] &$
+	tvim, frame &$
+	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
+        IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
+        IF (i gt 99) THEN name = arr2str(i, /trim) &$
+	write_png, '/home/40147775/msci/figs/time_cube/img'+ name + '.png', tvrd(/true) &$
+ENDFOR
+
+ffmpeg -framerate 15 -pattern_type glob -i '*.png' \
+  -c:v libx264 -pix_fmt yuv420p time_cube.mp4
 
 
 
