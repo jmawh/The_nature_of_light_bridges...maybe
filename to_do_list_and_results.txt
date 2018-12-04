@@ -397,3 +397,57 @@ Does temperature affect the behaviour of the shock
    observed/discovered. Further analysis of [...] led to the conclusion that...
 
 3. Further work/if i had more time i would... 
+
+
+
+17. Finding intensity values for the shock formation. The sub_scans_300 data as a mean  
+    intenity of 0.014 and a standard deviation of 80. This must be rememebered when thinking
+    about the value.
+	Event 41: shock formation: (frame 33) (362,526,33) = 339
+		: light bridge on collision: (frame 42) (406,548,42) = 290
+
+	Event 77: Shock formation: (frame 72) (387,541,72) = 429
+		: light bridge on collision: (frame 78) (407,532,78) = 103
+
+	Event 90: shock formation: (frame 90)(387,541,90) = 376
+		: light bridge on collision: (frame 100) (396,550,100) = -83
+
+18. Finding the temperature of the shock as it forms (maximum value) and the temperature
+    as it interacts with the light bridge. Use the slice through the atmosphere, through
+    the shock for this. Note the temperatures are not correct in an absolute sense but 
+    the ratio of the values is accurate - i.e. they are all wrong by the same factor.
+	Event 41: shock forming (frame 33) (183,63,33) = 4416.5
+		: at LB: (frame 41) (207,72,41) = 4390
+
+	Event 77: shock forming (frame 73) (177,64,73) = 4248.3
+		: at LB (frame 78) (208,72,78) = 4264
+
+	Event 90: shock forming (frame 90) (185,63,90) = 4469.0
+		: at LB (frame 99) (208,72,99) = 3612
+
+	So even though the temperature of the shock formation is approximately similar across
+	the different shocks the temperature at the light bridge is different. 
+	As is expected, the shocks that show the most heating give the highest temperatures
+	at the LB - obviously.
+
+	Bu the heating seems independent of the temperature of the shock at formation.
+
+ 
+
+
+19. Height at which the shock forms: Take the y-value of the maximum temperature at the 
+    shock formation:
+	All of the y values are either 72 or 73 - all the shocks form at the same height,
+	suggesting that they all have similar energies (otherwise they would have shocked
+	before that point or after). 
+
+	So, all the shocks have the same temperature at the same height at formation.
+	They are all roughly similar in terms of distance to the light bridge - 
+	actually it would be quite reasonble to claim that they are all caused by the
+	same event.
+
+	So what seperates their interaction properties. I haven't been able to answer 
+	question but a few suggestions are:
+	- Differences in the magnetic fields associated with the shock fronts.
+	- Differences in the speed of progagation
+	- Variations in the Light Bridge over time.
