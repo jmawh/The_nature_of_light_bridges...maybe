@@ -692,7 +692,7 @@ oplot, x_out2, tp_h, color='120'
 
 
 ; #######################################################################################################
-;		Cubes - one for the interaction(70), one for the lack of interaction (90)
+;		Cubes - one for the interaction(70), one for the lesser interaction (90)
 ; #######################################################################################################
 
 tau_and_x_event_70 = fltarr(551, 75, 110)
@@ -916,10 +916,10 @@ device, filename='/home/40147775/msci/figs/spectra_example_2.eps'
 loadct, 0, /silent
 !p.background = 255 
 !p.color = 0 
-plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X)', ytitle = 'Intensity', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=2, font=-1, title='Spectra Example for the Quiet Sun', xticks = 4
+plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X', ytitle = 'Intensity', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=2, font=-1, title='Spectra Example for the Quiet Sun', xticks = 4
 device, /close
 set_plot, 'x'
-xcharsize=10, ycharsize=10, 
+
 
 ; Shock propagation
 RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/common_vars.sav'
