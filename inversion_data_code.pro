@@ -764,13 +764,13 @@ FOR i=0, 109 DO BEGIN &$
 	!p.background = 255 &$
 	!p.color = 0 &$
 	loadct, 5, /silent &$
-	frame = tau_and_x_event_70[*,*,i] &$
+	frame = tau_and_x_event_70[*,*,i] &$ 
 	tvim, ALOG10(frame)>3.55<3.75, xtitle='Distance / Mm', xrange=[0,38.75], yrange=[-130, 1860], ytitle='Geometric Height / km' &$
 	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
         IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
         IF (i gt 99) THEN name = arr2str(i, /trim) &$
 	write_png, '/home/40147775/msci/figs/tau_and_x_event_70/img'+ name + '.png', tvrd(/true) &$
-ENDFOR
+ENDFOR							
 
 ; Now the 45 degree one
 FOR i=0, 109 DO BEGIN &$
@@ -778,13 +778,44 @@ FOR i=0, 109 DO BEGIN &$
 	!p.background = 255 &$
 	!p.color = 0 &$
 	loadct, 5, /silent &$
-	frame = angle_slice_tau_90[*,*,i] &$
+	frame = angle_slice_tau_90[*,*,i] &$ ;reduce the fov: angle_slice_event_90[110:339, *, i]
 	tvim, ALOG10(frame)>3.55<3.75, xtitle='Distance / Mm', xrange=[0,31.6], yrange=[-130, 1860], ytitle='Geometric Height / km' &$
 	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
         IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
         IF (i gt 99) THEN name = arr2str(i, /trim) &$
 	write_png, '/home/40147775/msci/figs/angle_slice_tau_90/img'+ name + '.png', tvrd(/true) &$
-ENDFOR
+ENDFOR						; remve _cut for full fov
+; #########################################################################################################
+;		Saving out these files as pngs to be turned into videos later- CUT DOWN FOV	
+; #########################################################################################################
+
+; Start with the slice acorss x for fixed y:
+FOR i=0, 109 DO BEGIN &$
+	window,0,xsize=1900,ysize=500,/pixmap &$
+	!p.background = 255 &$
+	!p.color = 0 &$
+	loadct, 5, /silent &$
+	frame = tau_and_x_event_70[110:339,*,i] &$ ; reduce the fov: tau_and_x_event_70[110:339, *, i]
+	tvim, ALOG10(frame)>3.55<3.75, xtitle='Distance / Mm', xrange=[0,16.1], yrange=[-130, 1860], ytitle='Geometric Height / km', pcharsize=3, lcharsize=2, title = 'Horizontal slice through the solar atmosphere' &$
+	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
+        IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
+        IF (i gt 99) THEN name = arr2str(i, /trim) &$
+	write_png, '/home/40147775/msci/figs/tau_and_x_event_70_cut/img'+ name + '.png', tvrd(/true) &$
+ENDFOR							; remove _cut for full fov
+
+; Now the 45 degree one
+FOR i=0, 109 DO BEGIN &$
+	window,0,xsize=1900,ysize=500,/pixmap &$
+	!p.background = 255 &$
+	!p.color = 0 &$
+	loadct, 5, /silent &$
+	frame = angle_slice_tau_90[110:339,*,i] &$ 
+	tvim, ALOG10(frame)>3.55<3.75, xtitle='Distance (Mm)', xrange=[0,16.1], yrange=[-130, 1860], ytitle='Geometric Height (km)', pcharsize=3, lcharsize=2, title = 'Angle slice through the solar atmosphere' &$
+	IF (i le 9) THEN name = '00' + arr2str(i, /trim) &$
+        IF (i gt 9) AND (i le 99) THEN name = '0' + arr2str(i, /trim) &$
+        IF (i gt 99) THEN name = arr2str(i, /trim) &$
+	write_png, '/home/40147775/msci/figs/angle_slice_tau_90_cut/img'+ name + '.png', tvrd(/true) &$
+ENDFOR						
 
 ; #######################################################################################################
 ; 				Above images to video	(ran in folder)	
@@ -797,7 +828,11 @@ ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
 ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
   -c:v libx264 -pix_fmt yuv420p event_90_angle_lb_interaction_final.mp4
 
+ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
+  -c:v libx264 -pix_fmt yuv420p cut_fov_horizontal_slice.mp4
 
+ffmpeg -framerate 5 -pattern_type glob -i '*.png' \
+  -c:v libx264 -pix_fmt yuv420p cut_fov_angle_slice.mp4
 ; #####################################################################################################
 ;		Looking at another collison event 41 - similariaties with 77?
 ; #####################################################################################################
