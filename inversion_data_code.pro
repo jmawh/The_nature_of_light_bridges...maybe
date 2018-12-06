@@ -418,8 +418,8 @@ tvim,tau_and_x_against_time_276[*,*,77]
 temperature_time = FLTARR(75, 16)
 left_of_lb = 206
 right_of_lb = 219
-FOR t = 0,15 DO BEGIN &$
-    temperature_slice = TAU_AND_X_AGAINST_TIME_276[left_of_lb:right_of_lb, *, t+70] &$
+FOR t = 0,15 DO BEGIN &$		; originally _276
+    temperature_slice = TAU_AND_X_AGAINST_TIME_284[left_of_lb:right_of_lb, *, t+70] &$
     temperature_time[*,t] = REFORM(TOTAL(temperature_slice, 1) / n_elements(temperature_slice[*,t])) &$
 ENDFOR
 
@@ -454,8 +454,8 @@ tvim, ALOG10(temperature_time),/sc,range=[3.55,3.75]
                                
 ; Averaging over only the first 3 pixels of the LB:
 temperature_time3 = fltarr(75,16)
-FOR i = 0,15 DO BEGIN &$                                                                        
-    temperature_slice = TAU_AND_X_AGAINST_TIME_276[206:208, *, i+70] &$                         
+FOR i = 0,15 DO BEGIN &$     ;origin_276                                                                   
+    temperature_slice = TAU_AND_X_AGAINST_TIME_284[206:208, *, i+70] &$                         
     temperature_time3[*,i] = REFORM(TOTAL(temperature_slice, 1) / 3.) &$                         
 ENDFOR                                                                
 
@@ -484,7 +484,7 @@ FOR k = 0, 109 DO BEGIN &$
 	cube = readfits(data[k]) &$
 	los_vel_avg[k] = TOTAL(los_vel_lb)/n_elements(los_vel_lb) &$
 	FOR i=463, 465 DO BEGIN &$
-		pixel = cube[i,276,*] &$
+		pixel = cube[i,286,*] &$ ; originally 276
 		pixel_profile = TOTAL(TOTAL(pixel,2),1) &$
 		pixel_fit = GAUSSFIT(wave, pixel_profile, pixel_coeff, ESTIMATES =[-1281.2, 8542.0, 0.197, -1272979.2, 193.3, -0.005]) &$
 		mean_pixel_fit = pixel_coeff[1] &$
@@ -508,8 +508,8 @@ RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/nlte_temp_correction_all.
 temperature_time_90 = FLTARR(75, 16)
 left_of_lb = 206
 right_of_lb = 209
-FOR t = 0,15 DO BEGIN &$
-    temperature_slice = TAU_AND_X_AGAINST_TIME_276[left_of_lb:right_of_lb, *, t+90] &$
+FOR t = 0,15 DO BEGIN &$ 		; originally _276
+    temperature_slice = TAU_AND_X_AGAINST_TIME_284[left_of_lb:right_of_lb, *, t+90] &$
     temperature_time_90[*,t] = REFORM(TOTAL(temperature_slice, 1) / n_elements(temperature_slice[*,t])) &$
 ENDFOR
 
@@ -518,7 +518,7 @@ ENDFOR
 
 tvim, temperature_time_90, xtitle='Pseudo height, photosphere -> chromosphere', ytitle='time step ( 0 => 70th time step)'
 
-tvim, ALOG10(temperature_time_90)[0:30, *],/sc,range=[3.55,3.75]
+
 
 ;#####################################################################################################
 ; Creating a figure comparing the Doppler velocity to the temperature - 77 event
@@ -550,11 +550,11 @@ device, filename='/home/40147775/msci/figs/temp_with_los.eps', /color
 loadct, 3
 !p.background = 255
 !p.color = 0
-tvim, rotate(log_temp_time3,3), xtitle='Time Step', ytitle='Pseudo optical height'
-loadct, 20
+tvim, rotate(log_temp_time3,3), xtitle='Time Step', ytitle='Pseudo optical height', /sc
+loadct, 2
 oplot, findgen(16), (los_vel_avg[70:85]*7)+8, thick=2
 loadct, 3
-axis, yaxis=1, YTITLE='LOS Vel',ystyle=1,YRANGE = (!Y.CRANGE)/12
+;axis, yaxis=1, YTITLE='LOS Vel',ystyle=1,YRANGE = (!Y.CRANGE)/12
 device, /close
 set_plot, 'x'
 
@@ -572,16 +572,43 @@ device, filename='/home/40147775/msci/figs/temp_with_los_frame_90.eps', /color
 loadct, 3
 !p.background = 255
 !p.color = 0
-tvim, rotate(log_temp_time_90,3), xtitle='Time Step', ytitle='Pseudo optical height'
+tvim, rotate(log_temp_time_90,3), xtitle='Time Step', ytitle='Pseudo optical height', /sc
 loadct, 20
 oplot, findgen(16), (los_vel_avg[90:105]*7)+8, thick=2
 loadct, 3
-axis, yaxis=1, YTITLE='LOS Vel',ystyle=1,YRANGE = (!Y.CRANGE)/12
+;axis, yaxis=1, YTITLE='LOS Vel',ystyle=1,YRANGE = (!Y.CRANGE)/12
 device, /close
 set_plot, 'x'
 
 
-; Conversion of optical depth to height in 
+; ###########################################################################################################
+; 	Concise temperature of Lb with LOS vel
+; ###########################################################################################################
+; calculate los_avg_vel first
+start_time = 70
+temperature_time = FLTARR(75, 16)
+left_of_lb = 206
+right_of_lb = 209
+FOR t = 0,15 DO BEGIN &$ 		; originally _276
+    temperature_slice = TAU_AND_X_AGAINST_TIME_284[left_of_lb:right_of_lb, *, t+start_time] &$
+    temperature_time[*,t] = REFORM(TOTAL(temperature_slice, 1) / n_elements(temperature_slice[*,t])) &$
+ENDFOR
+
+cutdown_temp = temperature_time[50:*, *]
+log_temp_time = ALOG10(cutdown_temp)
+log_temp_time = ROTATE(log_temp_time_90, 5)
+
+loadct, 3
+!p.background = 255
+!p.color = 0
+tvim, rotate(log_temp_time,3), xtitle='Time Step', ytitle='Pseudo optical height', /sc
+loadct, 20
+oplot, findgen(16), (los_vel_avg[start_time:start_time + 15]*7)+8, thick=2
+
+
+; #######################################################################################################
+; Conversion of optical depth to height
+; #######################################################################################################
 RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/mackkl_m.sav', /verbose
 
 density_m = mackkl_m.nhtot * 1.67E-27 * (100.)^3.
@@ -1100,5 +1127,12 @@ ffmpeg -framerate 15 -pattern_type glob -i '*.png' \
   -c:v libx264 -pix_fmt yuv420p time_cube.mp4
 
 
-
+; ###########################################################################################################
+; 		Exploring Coorrelations and trends in the data.
+; ###########################################################################################################
+; Data/quantaties that I have:
+; - doppler velocity
+; - intensity
+; - temperature
+; I need transverse velocity - at least for the 3 shocks
 
