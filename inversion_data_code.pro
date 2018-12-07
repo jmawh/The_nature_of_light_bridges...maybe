@@ -1183,9 +1183,15 @@ doppler_velocity = (delta_lambda/8542.016)*3.e5 ; km/s
 tvim, doppler_velocity, /sc, range=[-5,5]
 tvim, luminosity[200:750, 260:810], /sc
 
+lum = luminosity[200:750, 260:810, *]
+lum = reform(lum, 303601)
+dv = reform(doppler_velocity, 303601)
+FOR i=0, n_elements(dv)-1 DO BEGIN &$
+	IF dv[i] GT 5 THEN dv[i] = 5 &$
+	IF dv[i] LT (-5) THEN dv[i] = (-5) &$
+ENDFOR
 
-
-
-
+; save out varibles to plot in python
+SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/doppler_vel_and_luminosity.sav', dv, lum
 
 
