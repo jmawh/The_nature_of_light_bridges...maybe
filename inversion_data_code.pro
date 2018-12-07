@@ -1132,7 +1132,60 @@ ffmpeg -framerate 15 -pattern_type glob -i '*.png' \
 ; ###########################################################################################################
 ; Data/quantaties that I have:
 ; - doppler velocity
-; - intensity
+; - intensity (luminosity due to fuction called intensity)
 ; - temperature
 ; I need transverse velocity - at least for the 3 shocks
+
+; #######################################################################################################
+;		Start by comparing doppler velocity to luminosity for a given time
+; #######################################################################################################
+
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/wavelengths_original.sav'
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+
+time = 41
+cube = readfits(data[41])
+; start by comparing average intensity:
+; intensity at x,y is 
+luminosity = total(cube, 3)/n_elements(reform(cube[1,1,*]))
+
+quiet_profile_means = fltarr(408)
+FOR i=0, 407 DO BEGIN &$
+	print, i &$
+	cube_i = readfits(data[i], /silent) &$	
+	quiet_square = cube_i[350:650, 730:900, *] &$
+	profile_of_quiet_sun = total(total(quiet_square,2),1)/ 51471 &$
+	fit_of_quiet_sun = GAUSSFIT(wave, profile_of_quiet_sun, quiet_coeff, NTERMS = 6) &$
+	quiet_profile_means[i] = quiet_coeff[1] &$
+ENDFOR
+
+; remove bad data and replace with mean of good data
+mean_good_data = mean(quiet_profile_means[0:307], /double) ; double makes a BIG difference
+quiet_profile_means[308:349] = mean_good_data
+mean(quiet_profile_means[0:307], /double)
+stddev(quiet_profile_means[0:307], /double)
+plot, quiet_profile_means, yrange=[8541.9,8542.1] ; quick check
+quiet_sun_line_core = mean(quiet_profile_means[0:307], /double)
+; quiet_sun_line_core is the rest wavelength of the quiet sun = 8542.016
+
+delta_lambda=fltarr(551,551)
+FOR i=200, 750 DO BEGIN &$
+	print, i &$
+	FOR j=260, 810 DO BEGIN &$
+		examination_area = cube[i, j, *] &$ 
+		examination_area_profile = TOTAL(TOTAL(examination_area, 2),1) &$
+		examination_area_fit = GAUSSFIT(wave, examination_area_profile, examination_area_coeff, ESTIMATES=[-1281.2, 8542.0, 0.197, -1272979.2, 193.3, -0.005])&$
+		pixel_line_core = examination_area_coeff[1] &$
+		delta_lambda[i-200,j-260] = pixel_line_core - 8542.016 &$
+ENDFOR
+
+doppler_velocity = (delta_lambda/8542.016)*3.e5 ; km/s
+tvim, doppler_velocity, /sc, range=[-5,5]
+tvim, luminosity[200:750, 260:810], /sc
+
+
+
+
+
+
 
