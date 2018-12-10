@@ -233,6 +233,8 @@ FOR i=0, (n_scans - 1) DO BEGIN &$
 
 ENDFOR
 
+SAVE,  FILENAME='/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/rms_scans.sav', sub_scans_100, sub_scans_300, sub_scans_500
+
 xstepper, sub_scans_100, xsize=700, ysize=700
 xstepper, sub_scans_300, xsize=700, ysize=700
 xstepper, sub_scans_500, xsize=700, ysize=700
