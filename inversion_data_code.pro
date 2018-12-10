@@ -1195,3 +1195,35 @@ ENDFOR
 SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/doppler_vel_and_luminosity.sav', dv, lum
 
 
+; #######################################################################################################
+;			  Temperature and doppler velocity for a given time
+; #######################################################################################################
+; temperature can easily be extracted from the inversion scans.
+; Doppler velocity as above.
+
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0077.sav'
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+time = 77
+cube = readfits(data[time])
+temp = fit_model_temp
+
+; find the average temperature across the height of the atmosphere:
+temp_avg = total(temp, 1)/n_elements(reform(temp[*,1,1]))
+
+; doppler velocity
+delta_lambda=fltarr(551,551)
+FOR i=200, 750 DO BEGIN &$
+	print, i &$
+	FOR j=260, 810 DO BEGIN &$
+		examination_area = cube[i, j, *] &$ 
+		examination_area_profile = TOTAL(TOTAL(examination_area, 2),1) &$
+		examination_area_fit = GAUSSFIT(wave, examination_area_profile, examination_area_coeff, ESTIMATES=[-1281.2, 8542.0, 0.197, -1272979.2, 193.3, -0.005])&$
+		pixel_line_core = examination_area_coeff[1] &$
+		delta_lambda[i-200,j-260] = pixel_line_core - 8542.016 &$
+ENDFOR
+
+doppler_velocity = (delta_lambda/8542.016)*3.e5 ; km/s
+; still has some massive values
+
+
+

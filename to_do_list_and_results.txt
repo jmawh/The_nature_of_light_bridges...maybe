@@ -460,11 +460,11 @@ I. sunspot - y
 II. umbral flashes - y
 III. light bridges - y
 IV. e.g temp inversions - y
-V. distributions of original intensity at line core
-VI. distributions of rms intensity - check
-VII. doppler velocity of quiet sun, bfore & after correcting bad data.
-VIII. plot showing region used for quiet sun investigations 
-IX. Example of applying correctiosn to the data.
+V. distributions of original intensity at line core - y
+VI. distributions of rms intensity - y
+VII. doppler velocity of quiet sun, after correction - y
+VIII. plot showing region used for quiet sun investigations - y 
+IX. Example of corrected and uncorrected temp data. - y
 X. 4 plot of event 77
 XI. 4 plot of event 90
 XII. 4 plot of rebound, event 156?
