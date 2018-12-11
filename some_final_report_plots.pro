@@ -165,19 +165,108 @@ x2 = 0.45
 x3 = 0.55
 x4 = 0.9
 y1 = 0.1 
-y2 = 0.45
-y3 = 0.55
+y2 = 0.42
+y3 = 0.58
 y4 = 0.9
 
+; creatng image maps for each image
+map_1 = make_map(frame_1, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+map_2 = make_map(frame_2, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+map_3 = make_map(frame_3, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+map_4 = make_map(frame_4, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/X_event_7_multiplot.eps'
+device, filename='/home/40147775/msci/figs/report_figs/X_event_77_multiplot.eps'
 !p.background = 255 
 !p.color = 0 
 loadct, 0, /silent
-mult, 2,2
-tvim, frame_1, position=[x1,y3,x2,y4], xrange
-tvim, frame_2, position=[x3,y3,x4,y4]
-tvim, frame_3, position=[x1,y1,x2,y2]
-tvim, frame_4, position=[x3,y1,x4,y2]
+mult, 1,1
+plot_map, map_1, position=[x1,y3,x2,y4], /noerase, title='Frame 72', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_2, position=[x3,y3,x4,y4], /noerase, title='Frame 76', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_3, position=[x1,y1,x2,y2], /noerase, title='Frame 79', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_4, position=[x3,y1,x4,y2], /noerase, title='Frame 83', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 device, /close
 set_plot, 'x'
+
+
+
+; XI 4 plot of event 90
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/rms_scans.sav'
+
+frame_1 = sub_scans_300[300:450,470:620,90]
+frame_2 = sub_scans_300[300:450,470:620,95]
+frame_3 = sub_scans_300[300:450,470:620,99]
+frame_4 = sub_scans_300[300:450,470:620,102]
+
+x1 = 0.1
+x2 = 0.45
+x3 = 0.55
+x4 = 0.9
+y1 = 0.1 
+y2 = 0.42
+y3 = 0.58
+y4 = 0.9
+
+; creatng image maps for each image
+map_1 = make_map(frame_1, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+map_2 = make_map(frame_2, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+map_3 = make_map(frame_3, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+map_4 = make_map(frame_4, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/X_event_90_multiplot.eps'
+!p.background = 255 
+!p.color = 0 
+loadct, 0, /silent
+mult, 1,1
+plot_map, map_1, position=[x1,y3,x2,y4], /noerase, title='Frame 90', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_2, position=[x3,y3,x4,y4], /noerase, title='Frame 95', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_3, position=[x1,y1,x2,y2], /noerase, title='Frame 88', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_4, position=[x3,y1,x4,y2], /noerase, title='Frame 102', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+device, /close
+set_plot, 'x'
+
+
+; XII 4 plot of event 156
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/rms_scans.sav'
+
+frame_1 = sub_scans_300[300:450,470:620,156]
+frame_2 = sub_scans_300[300:450,470:620,158]
+frame_3 = sub_scans_300[300:450,470:620,160]
+frame_4 = sub_scans_300[300:450,470:620,164]
+
+x1 = 0.1
+x2 = 0.45
+x3 = 0.55
+x4 = 0.9
+y1 = 0.1 
+y2 = 0.42
+y3 = 0.58
+y4 = 0.9
+
+; creatng image maps for each image
+map_1 = make_map(frame_1, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+map_2 = make_map(frame_2, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+map_3 = make_map(frame_3, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+map_4 = make_map(frame_4, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/X_event_156_multiplot.eps'
+!p.background = 255 
+!p.color = 0 
+loadct, 0, /silent
+mult, 1,1
+plot_map, map_1, position=[x1,y3,x2,y4], /noerase, title='Frame 156', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_2, position=[x3,y3,x4,y4], /noerase, title='Frame 158', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_3, position=[x1,y1,x2,y2], /noerase, title='Frame 160', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_4, position=[x3,y1,x4,y2], /noerase, title='Frame 164', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+device, /close
+set_plot, 'x'
+
+; XIII Temperature at formation with errors
+
+
+
+
+
+
