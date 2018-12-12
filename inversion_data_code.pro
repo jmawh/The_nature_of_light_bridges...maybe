@@ -768,7 +768,8 @@ lb_bold = angle_slice_tau_90
 lb_bold[203, *, *] = 6000
 xstepper, lb_bold, xsize=1900, ysize=500
 
-; betwee these two one can see the movement of the event at frame 90 ish.
+SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/temp_slice_all_events.sav', tau_and_x_event_70, angle-slice_tau_90
+; between these two one can see the movement of the event at frame 90 ish.
 
 ; #####################################################################################################
 ;				Upgrading the plots with useful axis
