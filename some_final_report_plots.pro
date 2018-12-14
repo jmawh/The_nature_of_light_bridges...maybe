@@ -348,6 +348,56 @@ oplot, findgen(n_elements(doppler_velocity[70:85]))+70, doppler_velocity[70:85]/
 device, /close
 set_plot, 'x'
 
+; XVII temp-time-dv plot for event 90
+
+RESTORE, '/home/40147775/msci/inversion_data/my_sav_files/temp_slice_all_events.sav', /verbose
+temperature_time = fltarr(75,16)
+FOR i = 0,15 DO BEGIN &$                                                                        
+temperature_slice = angle_slice_tau_90[209:211, *, i+70] &$                         
+temperature_time[*,i] = REFORM(TOTAL(temperature_slice, 1) / 3.) &$                         
+ENDFOR   
+; only take the top of the atmosphere, where the interaction happens.
+cutdown_temp = temperature_time[50:*, *]
+log_temp_time = ALOG10(cutdown_temp)
+log_temp_time = ROTATE(log_temp_time, 1)
+;tvim, log_temp_time;
+new_llt = fltarr(16,25)
+FOR i =0, 15 DO new_llt[i, *] = log_temp_time[15-i, *]
+	
+delta_lambda=fltarr(110)
+mean_examined_area = fltarr(110)
+FOR i=0, 109 DO BEGIN &$
+	print, i &$
+	cube = readfits(data[i], /silent) &$
+	examination_area = cube[407:409, 453:455, *] &$ 
+	examination_area_profile = TOTAL(TOTAL(examination_area, 2),1) /9 &$
+	examination_area_fit = GAUSSFIT(wave, examination_area_profile, examination_area_coeff, ESTIMATES=[-1281.2, 8542.0, 0.197, -1272979.2, 193.3, -0.005])&$
+	mean_examined_area[i] = examination_area_coeff[1] &$
+	delta_lambda[i] = mean_examined_area[i] - 8542.012 &$
+ENDFOR
+; location of the light bridge isn't as it appears in the data, it has been rotated 
+; before being put into the inversion. So 286 in the inversion scans == 286 + 260 = 546 reflected in the 
+; centre of the x coordinates: 500-546+500 = 454
+doppler_velocity = (delta_lambda/8542.012)*3.e5 ; km/s
+
+map_for_event_90 = make_map(new_llt, xc = 97, yc =4.8 - (0.5*0.1), dx = 1, dy = 0.1 )
+
+
+plot_map, map_for_event_90, position=[0.25,0.2,0.75,0.80],ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1.5, charthick=1.5, xticklen=-.015, yticklen=-.015, xtitle='Time Step', ytitle='Log(Optical Depth)' , title='Behaviour of Heat at LB', xtickinterval=5, ytickinterval=0.5
+AXIS, YAXIS=1, YRANGE = (!Y.CRANGE*2-6), YSTYLE = 1, YTITLE = 'Doppler Velocity (km/s)', charsize=1.5
+oplot, findgen(n_elements(doppler_velocity[90:105]))+90, doppler_velocity[90:105]/1.8+2.8
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/XVII_temp_time_dv_event_90.eps', /color
+!p.background = 255
+!p.color = 0
+loadct, 3, /silent
+plot_map, map_for_event_90, position=[0.25,0.2,0.75,0.80],ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1.5, charthick=1.5, xticklen=-.015, yticklen=-.015, xtitle='Time Step', ytitle='Log(Optical Depth)' , title='Behaviour of Heat at LB', xtickinterval=5, ytickinterval=0.5
+AXIS, YAXIS=1, YRANGE = (!Y.CRANGE*2-6), YSTYLE = 1, YTITLE = 'Doppler Velocity (km/s)', charsize=1.5
+loadct, 0, /silent
+oplot, findgen(n_elements(doppler_velocity[90:105]))+90, doppler_velocity[90:105]/1.8+2.8
+device, /close
+set_plot, 'x'
 
 ;XVIII doppler velocity at the light bridge
 data = FILE_SEARCH('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
