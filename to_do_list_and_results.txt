@@ -454,6 +454,22 @@ Does temperature affect the behaviour of the shock
 
 
 
+20. For plot XIII for error in temp I took plus minus one step in each of the x, height
+    and time directions. They has significantly different standard deviations, with 
+    event 41 having a standard deviation of less than one with an absolute value
+    ~ 4000. The others had values of ~ 80 and 40 - this seems more reaonable.
+
+21. For the heat at the lb with doppler velocity for event 77: Frame starts at time step 70
+    (variable new_llt or map_for_event_77). There is a heating that occurs at the top of 
+    the atmosphere which is associated with an increase in positive doppler velocity 
+    (positive dv => toward the solar surface). There is then a swift decrease in the 
+    absolute doppler velocity (though it is still in the positive, toward photosphere
+    direction). Then the packet of heat is observed at a lower geometric height - which 
+    matches with the doppler velocity observations - the motion of the heat follows 
+    the doppler velocity. 
+
+22. Heat at the lb with doppler velocity for event 90
+ 
 
 					FINAL REPORT PLOTS	
 I. sunspot - y
@@ -468,9 +484,10 @@ IX. Example of corrected and uncorrected temp data. - y
 X. 4 plot of event 77 -y
 XI. 4 plot of event 90 -y
 XII. 4 plot of rebound, event 156? - y
-XIII. Graph of temperature at formation of the events -error from surrouding pixels 4x4
-XIV. Graph of temperature at LB of the events - error from surrounding pixels 4x4?
+XIII. Graph of temperature at formation of the events -error from surrouding pixels 4x4 -y
+XIV. Graph of temperature at LB of the events - error from surrounding pixels 4x4? - y
 XV. Graph of intensity in RMS scan at formation of the shock - y
-XVI. Temp-time-DV plot for event 77
+XVI. Temp-time-DV plot for event 77 - y
 XVII. Temp-time-DV plot for event 90
-XVIII. Any other relations.
+XVIII. Doppler velocity plot at the light bridge: super nice. - y
+XVIV. Any other relations.

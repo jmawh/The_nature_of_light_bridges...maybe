@@ -546,7 +546,7 @@ set_plot, 'x'
 
 
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/temp_with_los.eps', /color
+device, filename='/home/40147775/msci/figs/temp_with_los_77.eps', /color
 loadct, 3
 !p.background = 255
 !p.color = 0
