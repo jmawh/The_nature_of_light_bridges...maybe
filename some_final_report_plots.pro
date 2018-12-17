@@ -221,7 +221,7 @@ loadct, 0, /silent
 mult, 1,1
 plot_map, map_1, position=[x1,y3,x2,y4], /noerase, title='Frame 90', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 plot_map, map_2, position=[x3,y3,x4,y4], /noerase, title='Frame 95', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
-plot_map, map_3, position=[x1,y1,x2,y2], /noerase, title='Frame 88', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_3, position=[x1,y1,x2,y2], /noerase, title='Frame 99', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 plot_map, map_4, position=[x3,y1,x4,y2], /noerase, title='Frame 102', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 device, /close
 set_plot, 'x'
