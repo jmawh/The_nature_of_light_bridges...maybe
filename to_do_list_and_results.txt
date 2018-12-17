@@ -482,7 +482,7 @@ VII. doppler velocity of quiet sun, after correction - y
 VIII. plot showing region used for quiet sun investigations - y 
 IX. Example of corrected and uncorrected temp data. - y
 X. 4 plot of event 77 -y
-XI. 4 plot of event 90 -y
+XI. 4 plot of event 90 -y FIX
 XII. 4 plot of rebound, event 156? - y
 XIII. Graph of temperature at formation of the events -error from surrouding pixels 4x4 -y
 XIV. Graph of temperature at LB of the events - error from surrounding pixels 4x4? - y
