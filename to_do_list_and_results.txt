@@ -491,3 +491,5 @@ XVI. Temp-time-DV plot for event 77 - y
 XVII. Temp-time-DV plot for event 90
 XVIII. Doppler velocity plot at the light bridge: super nice. - y
 XVIV. Any other relations.
+XX. some kind of temperature 4 plot of the event 70 
+XXI. some kind of temperature 4 plot of the event 90
