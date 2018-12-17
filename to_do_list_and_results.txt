@@ -495,3 +495,4 @@ XX. some kind of temperature 4 plot of the event 70
 XXI. some kind of temperature 4 plot of the event 90
 
 ASK DAVE ABOUT FULL WIDTH PLOTS AND CAPTIONS IN AASTEX CLS
+SPEED OF A FEW SHOCKS TO TALK ABOUT IN SHOCK PROPAGTION SECTION
