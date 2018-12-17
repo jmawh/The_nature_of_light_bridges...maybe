@@ -480,7 +480,7 @@ V. distributions of original intensity at line core - y
 VI. distributions of rms intensity - y
 VII. doppler velocity of quiet sun, after correction - y
 VIII. plot showing region used for quiet sun investigations - y 
-IX. Example of corrected and uncorrected temp data. - y
+IX. Example of corrected and uncorrected temp data. - y NEW SCALE
 X. 4 plot of event 77 -y
 XI. 4 plot of event 90 -y FIX
 XII. 4 plot of rebound, event 156? - y
@@ -493,3 +493,5 @@ XVIII. Doppler velocity plot at the light bridge: super nice. - y
 XVIV. Any other relations.
 XX. some kind of temperature 4 plot of the event 70 
 XXI. some kind of temperature 4 plot of the event 90
+
+ASK DAVE ABOUT FULL WIDTH PLOTS AND CAPTIONS IN AASTEX CLS
