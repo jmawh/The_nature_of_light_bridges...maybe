@@ -132,23 +132,34 @@ FOR i=0, 74 DO BEGIN &$
 	corr_slice[*,i] = atm_slice[*,i] * umb_corr[i] &$
 ENDFOR
 loadct, 5
-image_map = make_map(corr_slice, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
+image_map1 = make_map(corr_slice, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
 set_plot, 'ps'
 device, filename='/home/40147775/msci/figs/report_figs/IX_temp_corrected_example.eps', /color
 !p.background = 255 
 !p.color = 0 
 loadct, 5, /silent
-plot_map, image_map, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='Applying Umbral Correction', xtickinterval=5, ytickinterval=2
+plot_map, image_map1, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='Applying Umbral Correction', xtickinterval=5, ytickinterval=2
 device, /close
 set_plot, 'x'
 
-image_map = make_map(atm_slice, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
+image_map2 = make_map(atm_slice, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
 set_plot, 'ps'
 device, filename='/home/40147775/msci/figs/report_figs/IXb_un_temp_corrected_example.eps', /color
 !p.background = 255 
 !p.color = 0 
 loadct, 5, /silent
-plot_map, image_map, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='Applying Umbral Correction', xtickinterval=5, ytickinterval=2
+plot_map, image_map2, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='Without Correction', xtickinterval=5, ytickinterval=2
+device, /close
+set_plot, 'x'
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/IX_event_77_temperature_corr_mult.eps', /color
+!p.background = 255 
+!p.color = 0 
+loadct, 5, /silent
+mult, 1,2
+plot_map, image_map2, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='Without Correction', xtickinterval=5, ytickinterval=2, position = [0.1,0.55, 0.9, 0.9]
+plot_map, image_map1, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='With Umbral Correction', xtickinterval=5, ytickinterval=2, position = [0.1,0.1,0.9, 0.35]
 device, /close
 set_plot, 'x'
 
@@ -421,6 +432,110 @@ loadct, 0, /silent
 !p.background = 255 
 !p.color = 0 
 plot, findgen(110), doppler_velocity, xtitle='Time Step', ytitle = 'Doppler Velocity (km/s)', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=1.5, font=-1, title='Doppler Velocity at the Light Bridge', xticks = 6
+device, /close
+set_plot, 'x'
+
+
+; Shock propagation velocity
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/common_vars.sav', /verbose
+xstepper, sub_scans_300[*,*,0:300], xsize=700, ysize=700
+; 1) 50, 54, right umbra
+; 2) 72, 77, top part
+; 3) 90, 95, top part
+; 4) 115, 119, right umbra
+; 5) 147, 152, left umbra
+; 6) 188, 195, right umbra, moving down
+; 7) 240, 245, left umbra
+; 8) 273, 278, right umbra, big front
+; using tvim, sub_scans_300[*,*,i]
+
+; Format x1, y1, x2, y2, frames_elapsed) -> e1
+e1 = [487, 480, 497, 466, 4]
+e2 = [382, 541, 382, 557, 5]
+e3 = [387, 541, 376, 555, 5]
+e4 = [491, 493, 478, 464, 4]
+e5 = [356, 522, 347, 549, 5]
+e6 = [475, 527, 470, 485, 7]
+e7 = [372, 528, 378, 551, 5]
+e8 = [491, 489, 474, 472, 5]
+
+; making prop, a 2D array of the above info
+prop = fltarr(5, 8)
+prop[*,0] = e1
+prop[*,1] = e2
+prop[*,2] = e3
+prop[*,3] = e4
+prop[*,4] = e5
+prop[*,5] = e6
+prop[*,6] = e7
+prop[*,7] = e8
+
+prop_pixels = fltarr(8)
+prop_time = [4,5,5,4,5,7,5,5] * 9.4
+FOR i=0, 7 DO BEGIN &$
+	; hyp = sqrt((x2-x1)^2 + (y2-y1)^2)
+	prop_pixels[i] = SQRT(abs(prop[2,i] - prop[0, i])^2 + abs(prop[3,i] - prop[1, i])^2) &$
+ENDFOR
+	
+prop_dist = prop_pixels*70.3
+prop_speed = prop_dist/prop_time
+; prop speed in km/s
+
+SAVE, filename='/home/40147775/msci/inversion_data/my_sav_files/propagation_speed.sav', prop_speed
+
+
+; XX mult plot of temp for event 70
+RESTORE, '/home/40147775/msci/inversion_data/my_sav_files/temp_slice_all_events.sav', /verbose
+loadct, 5
+
+form_77 = ALOG10(tau_and_x_event_70[*,*,73])>3.55<3.75
+heat_77 = ALOG10(tau_and_x_event_70[*,*,76])>3.55<3.75
+formation = make_map(form_77, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
+heating = make_map(heat_77, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/XX_event_70_temp_mult.eps', /color
+!p.background = 255 
+!p.color = 0 
+loadct, 5, /silent
+mult, 1,2
+plot_map, formation, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='Formation of Shock Frame 73', xtickinterval=5, ytickinterval=2, position = [0.1,0.6, 0.9, 0.9]
+plot_map, heating, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='Interaction with LB Frame 76', xtickinterval=5, ytickinterval=2, position = [0.1,0.1,0.9, 0.4]
+device, /close
+set_plot, 'x'
+
+; XXI mult plot of temp for event 90
+RESTORE, '/home/40147775/msci/inversion_data/my_sav_files/temp_slice_all_events.sav', /verbose
+loadct, 5
+
+form_90 = ALOG10(angle_slice_tau_90[*,*,89])>3.55<3.75
+heat_90 = ALOG10(angle_slice_tau_90[*,*,93])>3.55<3.75
+formation = make_map(form_90, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
+heating = make_map(heat_90, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/XXI_event_90_temp_mult.eps', /color
+!p.background = 255 
+!p.color = 0 
+loadct, 5, /silent
+mult, 1,2
+plot_map, formation, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='Formation of Shock Frame 89', xtickinterval=5, ytickinterval=2, position = [0.1,0.6, 0.9, 0.9]
+plot_map, heating, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, charthick=1.5, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Log(Optical Depth)' , title='Interaction with LB Frame 93', xtickinterval=5, ytickinterval=2, position = [0.1,0.1,0.9, 0.4]
+device, /close
+set_plot, 'x'
+
+; XXII example spectra with discontinuties
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/wavelengths_original.sav'
+cube = readfits(data[30])
+subcube = cube[500:502, 800:802, *]
+spectra = total(total(subcube,2),1)/9
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/XXII_con_spectra.eps'
+loadct, 0, /silent
+!p.background = 255 
+!p.color = 0 
+plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X', ytitle = 'Intensity', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=2, font=-1, title='Spectra Example for the Quiet Sun', xticks = 4
 device, /close
 set_plot, 'x'
 
