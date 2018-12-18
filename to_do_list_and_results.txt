@@ -480,9 +480,9 @@ V. distributions of original intensity at line core - y
 VI. distributions of rms intensity - y
 VII. doppler velocity of quiet sun, after correction - y
 VIII. plot showing region used for quiet sun investigations - y 
-IX. Example of corrected and uncorrected temp data. - y NEW SCALE
+IX. Example of corrected and uncorrected temp data. - y NEW SCALE -y
 X. 4 plot of event 77 -y
-XI. 4 plot of event 90 -y FIX
+XI. 4 plot of event 90 -y FIX -y
 XII. 4 plot of rebound, event 156? - y
 XIII. Graph of temperature at formation of the events -error from surrouding pixels 4x4 -y
 XIV. Graph of temperature at LB of the events - error from surrounding pixels 4x4? - y
@@ -491,9 +491,16 @@ XVI. Temp-time-DV plot for event 77 - y
 XVII. Temp-time-DV plot for event 90
 XVIII. Doppler velocity plot at the light bridge: super nice. - y
 XVIV. Any other relations.
-XX. some kind of temperature 4 plot of the event 70 
-XXI. some kind of temperature 4 plot of the event 90
-XXII. Example spectra with discontinuties
+XX. some kind of temperature 4 plot of the event 70 - y
+XXI. some kind of temperature 4 plot of the event 90 -y 
+XXII. Example spectra with discontinuties - y
 
-ASK DAVE ABOUT FULL WIDTH PLOTS AND CAPTIONS IN AASTEX CLS
-SPEED OF A FEW SHOCKS TO TALK ABOUT IN SHOCK PROPAGTION SECTION
+ASK DAVE ABOUT FULL WIDTH PLOTS AND CAPTIONS IN AASTEX CLS -y
+SPEED OF A FEW SHOCKS TO TALK ABOUT IN SHOCK PROPAGTION SECTION - y
+
+23. Speed of shock propagation
+	Take a few shocks and take coordinates in 1 time frame then again
+	in a later time frame (ideally 3 or more apart). Difference in pixel 
+	coordinates an then be convetrted into Mm, time is number of frames * 9.4
+	sav file: propagation_speed.sav - sent to email.
+
