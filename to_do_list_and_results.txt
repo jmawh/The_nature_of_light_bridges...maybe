@@ -493,7 +493,7 @@ XVIII. Doppler velocity plot at the light bridge: super nice. - y
 XVIV. Any other relations.
 XX. some kind of temperature 4 plot of the event 70 - y
 XXI. some kind of temperature 4 plot of the event 90 -y 
-XXII. Example spectra with discontinuties - y
+XXII. Example spectra with discontinuties - y FIX TITLE
 
 ASK DAVE ABOUT FULL WIDTH PLOTS AND CAPTIONS IN AASTEX CLS -y
 SPEED OF A FEW SHOCKS TO TALK ABOUT IN SHOCK PROPAGTION SECTION - y
