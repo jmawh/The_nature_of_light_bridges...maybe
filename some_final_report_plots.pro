@@ -3,7 +3,49 @@
 ; ####################################################################################################
 
 ; Sunspot, umbral flashes, light bridges and example temperature inversions are already taken care
-; of courtesy of the presentation, starting at V in the to_do_... list:
+; of courtesy of the presentation
+
+; IV temperature inversions - photosphere
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0001.sav'
+temp = fit_model_temp
+image = temp[5,*,*] ; 5 for photosphere, 70 for chromosphere
+image = reform(image)
+image_map = make_map(image, dx =0.0703 , dy=0.0703 , xc =19.4 - (0.5*0.0703), yc =19.4 - (0.5*0.0703))
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/IV_sunspot_photosphere_temp_2.eps', /encapsulated, xsize=24, ysize=24, /tt_font, set_font='Times', font_size=14, /color, bits_per_pixel=8
+!p.background = 255
+!p.color = 0
+loadct, 5, /silent
+x1 = 0.2
+y1 = 0.2
+x2 = 0.8
+y2 = 0.8
+plot_map, image_map, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=2, charthick=2, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Distance (Mm)' , title='Temperature of the Solar Photosphere', xtickinterval=10, ytickinterval=10, position=[0.2,0.2,0.8,0.8]
+colorbar, bottom=0, ncolors=255, charsize=1.5, charthick=2, color=0, divisions=2,minrange=7250, maxrange=8950, position=[x2+0.015,y1,x2+0.03,y2], /vertical, /right,ticknames=tickmarknames, title=’Intensity (arb. units)’, font=-1
+device, /close
+set_plot, 'x'
+
+
+; IV temperature inversions - chromosphere
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0001.sav'
+temp = fit_model_temp
+image = temp[70,*,*] ; 5 for photosphere, 70 for chromosphere
+image = reform(image)
+image_map = make_map(image, dx =0.0703 , dy=0.0703 , xc =19.4 - (0.5*0.0703), yc =19.4 - (0.5*0.0703))
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/IV_sunspot_chromosphere_temp_2.eps', /encapsulated, xsize=24, ysize=24, /tt_font, set_font='Times', font_size=14, /color, bits_per_pixel=8
+!p.background = 255
+!p.color = 0
+loadct, 5, /silent
+x1 = 0.2
+y1 = 0.2
+x2 = 0.8
+y2 = 0.8
+plot_map, image_map, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=2, charthick=2, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Distance (Mm)' , title='Temperature of the Solar Chromosphere', xtickinterval=10, ytickinterval=10, position=[0.2,0.2,0.8,0.8]
+colorbar, bottom=0, ncolors=255, charsize=1.5, charthick=2, color=0, divisions=2,minrange=2200, maxrange=5150, position=[x2+0.015,y1,x2+0.03,y2], /vertical, /right,ticknames=tickmarknames, title=’Intensity (arb. units)’, font=-1
+device, /close
+set_plot, 'x'
+
 
 ; V Distribtuions of original intensity at line core.
 ; use time cube 15, 0 - 300 frames
@@ -35,38 +77,45 @@ sub_scan_100 = reform(sub_scans_100, n_elements(sub_scans_100))
 sub_scan_300 = reform(sub_scans_300, n_elements(sub_scans_300))
 sub_scan_500 = reform(sub_scans_500, n_elements(sub_scans_500))
 
-hist_100 = HISTOGRAM(sub_scan_100)
-hist_300 = HISTOGRAM(sub_scan_300)
-hist_500 = HISTOGRAM(sub_scan_500)
+hist_100 = HISTOGRAM(sub_scan_100, NBINS = 100)
+hist_300 = HISTOGRAM(sub_scan_300, NBINS = 100)
+hist_500 = HISTOGRAM(sub_scan_500, NBINS = 100)
 
 hist_100_x = findgen(n_elements(hist_100)) + min(sub_scan_100)
 hist_300_x = findgen(n_elements(hist_300)) + min(sub_scan_300)
 hist_500_x = findgen(n_elements(hist_500)) + min(sub_scan_500)
 
+step_100 = (max(sub_scan_100) - min(sub_scan_100))/n_elements(hist_100)
+step_300 = (max(sub_scan_300) - min(sub_scan_300))/n_elements(hist_300)
+step_500 = (max(sub_scan_500) - min(sub_scan_500))/n_elements(hist_500)
+new_x_100 = (min(sub_scan_100) + findgen(n_elements(hist_100))*step_100) + 30 ; to center
+new_x_300 = (min(sub_scan_300) + findgen(n_elements(hist_300))*step_300) + 20 ; to center
+new_x_500 = (min(sub_scan_500) + findgen(n_elements(hist_500))*step_500) + 42 ; to center
+
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/VI_100_sec_rms_scan.eps'
+device, filename='/home/40147775/msci/figs/report_figs/VI_100_sec_rms_scan2.eps'
 loadct, 0, /silent
 !p.background = 255 
 !p.color = 0 
-plot, hist_100_x, hist_100, yrange=[0, 6000000], xrange=[-500,500], ytitle='Frequency Density', xtitle='Intensity', title='Intensity Distribution for 100 Second RMS', charsize=1.5, thick=2
+plot, new_x_100, hist_100, yrange=[0, 250000000], xrange=[-500,500], ytitle='Frequency Density', xtitle='Intensity', title='Intensity Distribution for 100 Second RMS', charsize=1.5, thick=2
 device, /close
 set_plot, 'x'
 
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/VI_300_sec_rms_scan.eps'
+device, filename='/home/40147775/msci/figs/report_figs/VI_300_sec_rms_scan2.eps'
 loadct, 0, /silent
 !p.background = 255 
 !p.color = 0 
-plot, hist_300_x, hist_300, yrange=[0, 6000000], xrange=[-500,500], ytitle='Frequency Density', xtitle='Intensity', title='Intensity Distribution for 300 Second RMS', charsize=1.5, thick=2
+plot, new_x_300, hist_300, yrange=[0, 250000000], xrange=[-500,500], ytitle='Frequency Density', xtitle='Intensity', title='Intensity Distribution for 300 Second RMS', charsize=1.5, thick=2
 device, /close
 set_plot, 'x'
 
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/VI_500_sec_rms_scan.eps'
+device, filename='/home/40147775/msci/figs/report_figs/VI_500_sec_rms_scan2.eps'
 loadct, 0, /silent
 !p.background = 255 
 !p.color = 0 
-plot, hist_500_x, hist_500, yrange=[0, 6000000], xrange=[-500,500], ytitle='Frequency Density', xtitle='Intensity', title='Intensity Distribution for 500 Second RMS', charsize=1.5, thick=2 
+plot, new_x_500, hist_500, yrange=[0, 250000000], xrange=[-500,500], ytitle='Frequency Density', xtitle='Intensity', title='Intensity Distribution for 500 Second RMS', charsize=1.5, thick=2 
 device, /close
 set_plot, 'x'
 
@@ -92,11 +141,11 @@ quiet_sun_line_core = mean(quiet_profile_means[0:307], /double)
 qs_dv = (quiet_profile_means - quiet_sun_line_core)/quiet_sun_line_core*300000
 
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/VII_doppler_vel_of_quiet_sun_corrected.eps'
+device, filename='/home/40147775/msci/figs/report_figs/VII_doppler_vel_of_quiet_sun_corrected2.eps'
 loadct, 0, /silent
 !p.background = 255 
 !p.color = 0 
-plot, qs_dv, yrange=[-0.5, 0.5], ytitle='Doppler Velocity', xtitle='Time Step', title='Doppler Velocity of the Quiet Sun', charsize=1.5, thick=2 
+plot, qs_dv, yrange=[-0.5, 0.5], ytitle='Doppler Velocity (km/s)', xtitle='Time(s)', title='Doppler Velocity of the Quiet Sun', charsize=1.5, thick=2, xrange=[0,400]
 device, /close
 set_plot, 'x'
 
@@ -494,7 +543,7 @@ formation = make_map(form_77, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
 heating = make_map(heat_77, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
 
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/XX_event_70_temp_mult.eps', /color
+device, filename='/home/40147775/msci/figs/report_figs/XX_event_70_temp_mult2.eps', /color
 !p.background = 255 
 !p.color = 0 
 loadct, 5, /silent
@@ -524,18 +573,33 @@ plot_map, heating, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=1, cha
 device, /close
 set_plot, 'x'
 
-; XXII example spectra with discontinuties
+; XXII example spectra in quiet Sun
 data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
 RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/wavelengths_original.sav'
 cube = readfits(data[30])
 subcube = cube[500:502, 800:802, *]
 spectra = total(total(subcube,2),1)/9
+spectra = SMOOTH(spectra, 3)
 set_plot, 'ps'
 device, filename='/home/40147775/msci/figs/report_figs/XXII_con_spectra.eps'
 loadct, 0, /silent
 !p.background = 255 
 !p.color = 0 
-plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X', ytitle = 'Intensity', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=2, font=-1, title='Spectra Example for the Quiet Sun', xticks = 4
+plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X', ytitle = 'Intensity', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=2, font=-1, title='Spectra Example for the Quiet Sun', xticks = 4, yrange=[1000,2800]
 device, /close
 set_plot, 'x'
 
+; XXII example spectra with discontinuties
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/wavelengths_original.sav'
+cube = readfits(data[75])
+subcube = cube[361:363, 474:476, *]
+spectra = total(total(subcube,2),1)/9
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/XXII_discon_spectra2.eps'
+loadct, 0, /silent
+!p.background = 255 
+!p.color = 0 
+plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X', ytitle = 'Intensity', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=2, font=-1, title='Spectra of Shock Formation', xticks = 4, yrange= [600,1200]
+device, /close
+set_plot, 'x'
