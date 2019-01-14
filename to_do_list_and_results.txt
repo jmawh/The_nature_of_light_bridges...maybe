@@ -504,3 +504,14 @@ SPEED OF A FEW SHOCKS TO TALK ABOUT IN SHOCK PROPAGTION SECTION - y
 	coordinates an then be convetrted into Mm, time is number of frames * 9.4
 	sav file: propagation_speed.sav - sent to email.
 
+
+		TO DO 14/01/18
+
+ - plot of maltby values as in note on rhs side of pg 14, dave's comments
+
+ - fix the sign on the temp multi plots and add vertical dashed lines surrounding ROI
+   then see pg 16, bottom left in commented report - check if still required.
+
+ - plot of the photosphere where the temp multi plots have been taken from
+
+ - explain code in appendix 1

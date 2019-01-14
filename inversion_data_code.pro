@@ -1052,6 +1052,25 @@ plot_map, image_map, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=2, c
 device, /close
 set_plot, 'x'
 
+; redoing intensity plots for the presentation take 2 to show where the temp inversions are taken from
+data = file_search('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+cube = readfits(data[30])
+image = cube[*,*,30] ; 5 for photosphere, 15 for chromosphere
+image = rotate(image, 7)
+image[199:201, 260:810] = 0
+image[749:751, 260:810] = 0
+image[200:750, 259:261] = 0
+image[200:750, 809:811] = 0
+image_map = MAKE_MAP(image, xc=35.15, yc=35.15, dx=0.0703 , dy=0.0703 ); dx=100, dy=100, 
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/sunspot_chromosphere_final.eps', /encapsulated, xsize=24, ysize=24, /tt_font, set_font='Times', font_size=16, /color, bits_per_pixel=8
+!p.background = 255
+!p.color = 0
+loadct, 3, /silent
+plot_map, image_map, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=2, charthick=2, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Distance (Mm)' , title='Intensity of the Solar Photosphere', xtickinterval=10, ytickinterval=10, position=[0.2,0.2,0.8,0.8]
+device, /close
+set_plot, 'x'
+
 ; Temperature plots for presentation take 2
 RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0001.sav'
 temp = fit_model_temp

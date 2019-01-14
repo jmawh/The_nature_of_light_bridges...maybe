@@ -367,6 +367,8 @@ SAVE, FILENAME='/home/40147775/msci/inversion_data/my_sav_files/XIII_data_temp_a
 ; XVI temp-time-dv plot for event 77
 
 RESTORE, '/home/40147775/msci/inversion_data/my_sav_files/temp_slice_all_events.sav', /verbose
+data = FILE_SEARCH('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/wavelengths_original.sav'
 temperature_time = fltarr(75,16)
 FOR i = 0,15 DO BEGIN &$                                                                        
 temperature_slice = tau_and_x_event_70[209:211, *, i+70] &$                         
@@ -384,7 +386,7 @@ delta_lambda=fltarr(110)
 mean_examined_area = fltarr(110)
 FOR i=0, 109 DO BEGIN &$
 	print, i &$
-	cube = readfits(data[i], /silent) &$
+	cube = readfits(data[i], silent) &$
 	examination_area = cube[407:409, 453:455, *] &$ 
 	examination_area_profile = TOTAL(TOTAL(examination_area, 2),1) /9 &$
 	examination_area_fit = GAUSSFIT(wave, examination_area_profile, examination_area_coeff, ESTIMATES=[-1281.2, 8542.0, 0.197, -1272979.2, 193.3, -0.005])&$
@@ -395,6 +397,17 @@ ENDFOR
 ; before being put into the inversion. So 286 in the inversion scans == 286 + 260 = 546 reflected in the 
 ; centre of the x coordinates: 500-546+500 = 454
 doppler_velocity = (delta_lambda/8542.012)*3.e5 ; km/s
+; uncertainty in maximum dv in region of interest: Take the avergae of the three (max = either side)
+; and display average +- stddev of all three:
+dvs = [3.944, 4.459, 4.081]
+dv_max = mean(dvs)
+err = stddev(dvs)
+; = 4.16 +- 0.27 km/s
+; same for the time after the interaction, 80 - 85
+rest = doppler_velocity[60:70]
+mean_dv = mean(rest)
+err_rest = stddev(rest)
+; 1.88 +- 0.43
 
 map_for_event_77 = make_map(new_llt, xc = 77, yc =4.8 - (0.5*0.1), dx = 1, dy = 0.1 )
 set_plot, 'ps'
@@ -411,6 +424,7 @@ set_plot, 'x'
 ; XVII temp-time-dv plot for event 90
 
 RESTORE, '/home/40147775/msci/inversion_data/my_sav_files/temp_slice_all_events.sav', /verbose
+restore, '/home/40147775/msci/inversion_data/14Jul_Inv/nlte_temp_correction_all.sav'
 temperature_time = fltarr(75,16)
 FOR i = 0,15 DO BEGIN &$                                                                        
 temperature_slice = angle_slice_tau_90[209:211, *, i+70] &$                         
