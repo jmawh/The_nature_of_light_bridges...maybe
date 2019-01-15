@@ -218,7 +218,12 @@ RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/rms_scans.
 frame_1 = sub_scans_300[300:450,470:620,72]
 frame_2 = sub_scans_300[300:450,470:620,76]
 frame_3 = sub_scans_300[300:450,470:620,79]
-frame_4 = sub_scans_300[300:450,470:620,83]
+frame_4 = sub_scans_300[300:450,470:620,82]
+
+frame_1 = BYTSCL(frame_1, min = (-300), max = 760)
+frame_2 = BYTSCL(frame_2, min = (-300), max = 760)
+frame_3 = BYTSCL(frame_3, min = (-300), max = 760)
+frame_4 = BYTSCL(frame_4, min = (-300), max = 760)
 
 x1 = 0.1
 x2 = 0.45
@@ -236,15 +241,15 @@ map_3 = make_map(frame_3, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0
 map_4 = make_map(frame_4, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
 
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/X_event_77_multiplot.eps'
+device, filename='/home/40147775/msci/figs/report_figs/X_event_77_multiplot_colour.eps', /color
 !p.background = 255 
 !p.color = 0 
-loadct, 0, /silent
+loadct, 5, /silent
 mult, 1,1
 plot_map, map_1, position=[x1,y3,x2,y4], /noerase, title='Frame 72', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 plot_map, map_2, position=[x3,y3,x4,y4], /noerase, title='Frame 76', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 plot_map, map_3, position=[x1,y1,x2,y2], /noerase, title='Frame 79', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
-plot_map, map_4, position=[x3,y1,x4,y2], /noerase, title='Frame 83', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_4, position=[x3,y1,x4,y2], /noerase, title='Frame 82', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 device, /close
 set_plot, 'x'
 
@@ -256,7 +261,12 @@ RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/rms_scans.
 frame_1 = sub_scans_300[300:450,470:620,90]
 frame_2 = sub_scans_300[300:450,470:620,95]
 frame_3 = sub_scans_300[300:450,470:620,99]
-frame_4 = sub_scans_300[300:450,470:620,102]
+frame_4 = sub_scans_300[300:450,470:620,101]
+
+frame_1 = BYTSCL(frame_1, min = (-300), max = 760)
+frame_2 = BYTSCL(frame_2, min = (-300), max = 760)
+frame_3 = BYTSCL(frame_3, min = (-300), max = 760)
+frame_4 = BYTSCL(frame_4, min = (-300), max = 760)
 
 x1 = 0.1
 x2 = 0.45
@@ -267,22 +277,22 @@ y2 = 0.42
 y3 = 0.58
 y4 = 0.9
 
-; creatng image maps for each image
+; creating image maps for each image
 map_1 = make_map(frame_1, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
 map_2 = make_map(frame_2, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
 map_3 = make_map(frame_3, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
 map_4 = make_map(frame_4, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
 
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/X_event_90_multiplot.eps'
+device, filename='/home/40147775/msci/figs/report_figs/X_event_90_multiplot_colour.eps', /color
 !p.background = 255 
 !p.color = 0 
-loadct, 0, /silent
+loadct, 5, /silent
 mult, 1,1
 plot_map, map_1, position=[x1,y3,x2,y4], /noerase, title='Frame 90', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 plot_map, map_2, position=[x3,y3,x4,y4], /noerase, title='Frame 95', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 plot_map, map_3, position=[x1,y1,x2,y2], /noerase, title='Frame 99', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
-plot_map, map_4, position=[x3,y1,x4,y2], /noerase, title='Frame 102', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
+plot_map, map_4, position=[x3,y1,x4,y2], /noerase, title='Frame 101', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 device, /close
 set_plot, 'x'
 
@@ -553,6 +563,42 @@ loadct, 5
 
 form_77 = ALOG10(tau_and_x_event_70[*,*,73])>3.55<3.75
 heat_77 = ALOG10(tau_and_x_event_70[*,*,76])>3.55<3.75
+form_77[150:151, 0:5  ] = 3.55
+form_77[150:151, 10:15] = 3.55
+form_77[150:151, 20:25] = 3.55
+form_77[150:151, 30:35] = 3.75
+form_77[150:151, 40:45] = 3.75
+form_77[150:151, 50:55] = 3.75
+form_77[150:151, 60:65] = 3.75
+form_77[150:151, 70:74] = 3.75
+
+form_77[250:251, 0:5  ] = 3.55
+form_77[250:251, 10:15] = 3.55
+form_77[250:251, 20:25] = 3.55
+form_77[250:251, 30:35] = 3.75
+form_77[250:251, 40:45] = 3.75
+form_77[250:251, 50:55] = 3.75
+form_77[250:251, 60:65] = 3.75
+form_77[250:251, 70:74] = 3.75
+
+heat_77[150:151, 0:5  ] = 3.55
+heat_77[150:151, 10:15] = 3.55
+heat_77[150:151, 20:25] = 3.55
+heat_77[150:151, 30:35] = 3.75
+heat_77[150:151, 40:45] = 3.75
+heat_77[150:151, 50:55] = 3.75
+heat_77[150:151, 60:65] = 3.75
+heat_77[150:151, 70:74] = 3.75
+
+heat_77[250:251, 0:5  ] = 3.55
+heat_77[250:251, 10:15] = 3.55
+heat_77[250:251, 20:25] = 3.55
+heat_77[250:251, 30:35] = 3.75
+heat_77[250:251, 40:45] = 3.75
+heat_77[250:251, 50:55] = 3.75
+heat_77[250:251, 60:65] = 3.75
+heat_77[250:251, 70:74] = 3.75
+
 formation = make_map(form_77, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
 heating = make_map(heat_77, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
 
@@ -573,11 +619,49 @@ loadct, 5
 
 form_90 = ALOG10(angle_slice_tau_90[*,*,89])>3.55<3.75
 heat_90 = ALOG10(angle_slice_tau_90[*,*,93])>3.55<3.75
+
+; adding vertical lines to highlight ROI
+form_90[150:151, 0:5  ] = 3.55
+form_90[150:151, 10:15] = 3.55
+form_90[150:151, 20:25] = 3.55
+form_90[150:151, 30:35] = 3.75
+form_90[150:151, 40:45] = 3.75
+form_90[150:151, 50:55] = 3.75
+form_90[150:151, 60:65] = 3.75
+form_90[150:151, 70:74] = 3.75
+
+form_90[250:251, 0:5  ] = 3.55
+form_90[250:251, 10:15] = 3.55
+form_90[250:251, 20:25] = 3.55
+form_90[250:251, 30:35] = 3.75
+form_90[250:251, 40:45] = 3.75
+form_90[250:251, 50:55] = 3.75
+form_90[250:251, 60:65] = 3.75
+form_90[250:251, 70:74] = 3.75
+
+heat_90[150:151, 0:5  ] = 3.55
+heat_90[150:151, 10:15] = 3.55
+heat_90[150:151, 20:25] = 3.55
+heat_90[150:151, 30:35] = 3.75
+heat_90[150:151, 40:45] = 3.75
+heat_90[150:151, 50:55] = 3.75
+heat_90[150:151, 60:65] = 3.75
+heat_90[150:151, 70:74] = 3.75
+
+heat_90[250:251, 0:5  ] = 3.55
+heat_90[250:251, 10:15] = 3.55
+heat_90[250:251, 20:25] = 3.55
+heat_90[250:251, 30:35] = 3.75
+heat_90[250:251, 40:45] = 3.75
+heat_90[250:251, 50:55] = 3.75
+heat_90[250:251, 60:65] = 3.75
+heat_90[250:251, 70:74] = 3.75
+
 formation = make_map(form_90, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
 heating = make_map(heat_90, xc = 17-0.5*0.0703, yc = 2.3, dx= 0.0703, dy =0.1)
 
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/XXI_event_90_temp_mult.eps', /color
+device, filename='/home/40147775/msci/figs/report_figs/XXI_event_90_temp_mult2.eps', /color
 !p.background = 255 
 !p.color = 0 
 loadct, 5, /silent
@@ -617,3 +701,67 @@ loadct, 0, /silent
 plot, wave, spectra, xtitle='Wavelength / !3' + STRING(197B) + '!X', ytitle = 'Intensity', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=2, font=-1, title='Spectra of Shock Formation', xticks = 4, yrange= [600,1200]
 device, /close
 set_plot, 'x'
+
+;XXIII Maltby values plot comparing polyfit to interpol
+
+; start with the interpol
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/mackkl_m.sav', /verbose
+height_m = mackkl_m.h
+optical_depth_m = mackkl_m.tau5
+log_optical_depth_m = ALOG10(optical_depth_m)
+
+; grid values for interpol
+x_out = findgen(1140)
+x_out = x_out/100
+x_out = x_out - 10
+; od_h is the interpol y values (values of height)
+od_h = interpol(height_m, ALOG10(optical_depth_m), x_out)
+
+; polyfit version
+oh_fit = POLY_FIT(log_optical_depth_m, height_m, 25)
+g = findgen(1140, increment=0.01)
+od_values = g - 10
+fit_od_h = fltarr(1140)
+fit_od_h_i = fltarr(51)
+
+FOR i=0,1139 DO BEGIN &$
+	fit_od_h[i] = TOTAL(fit_od_h_i) &$
+	FOR j=0, 25 DO BEGIN &$
+	fit_od_h_i[j] = oh_fit[j] * h[i]^j  &$
+ENDFOR
+; fit_od_h is the polyfitted version
+; plotting
+
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/XXIII_maltby_comparison.eps'
+loadct, 5
+!p.color = 0
+!p.background = 255
+plot, log_optical_depth_m, height_m, psym =4, xtitle=' log(!7s!3)', ytitle = 'Height (km)', position=[0.2,0.2,0.8,0.8], thick=3, CHARTHICK=2, charsize=2, font=-1, title='Plot of Optical Depth against Height' ; original data 
+oplot, od_values, fit_od_h, color='120', thick = 2
+oplot, x_out, od_h, color = '60', thick = 2
+device, /close
+set_plot, 'x'
+
+
+;XXIV location of temp slices 77 and 90
+; these are variables tau_and_x_event_70 (y = 286 for all x)
+; and angle_slice_tau_90 (y = x+83)
+; restore an inversion burst and modify:
+RESTORE, '/home/40147775/msci/inversion_data/14Jul_Inv/inversion_burst_0090.sav'
+temp_cube = fit_model_temp
+photo_img = reform(temp_cube[1, *, *])
+photo_img[*, 285:287] = 7500
+FOR i=0, 450 DO photo_img[i:i+2, i+83:i+84] = 7500 &$
+
+image_map = make_map(photo_img, dx =0.0703 , dy=0.0703 , xc =19.4 - (0.5*0.0703), yc =19.4 - (0.5*0.0703))
+set_plot, 'ps'
+device, filename='/home/40147775/msci/figs/report_figs/XXIV_slice_locations.eps', /encapsulated, xsize=24, ysize=24, /tt_font, set_font='Times', font_size=14, /color, bits_per_pixel=8
+!p.background = 255
+!p.color = 0
+loadct, 5, /silent
+plot_map, image_map, ycharsize=1, xcharsize=1, xthick=2, ythick=2, charsize=2, charthick=2, xticklen=-.025, yticklen=-.025, xtitle='Distance (Mm)', ytitle='Distance (Mm)' , title='Location of Atmosphere Slices', xtickinterval=10, ytickinterval=10, position=[0.2,0.2,0.8,0.8]
+device, /close
+set_plot, 'x'
+
+

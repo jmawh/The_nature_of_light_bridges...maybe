@@ -494,6 +494,8 @@ XVIV. Any other relations.
 XX. some kind of temperature 4 plot of the event 70 - y
 XXI. some kind of temperature 4 plot of the event 90 -y 
 XXII. Example spectra with discontinuties - y FIX TITLE
+XXIII. maltby plot comparing polyfit to interpol
+XXIV. plot showing where temp slices f/ event 77 and 90 are from
 
 ASK DAVE ABOUT FULL WIDTH PLOTS AND CAPTIONS IN AASTEX CLS -y
 SPEED OF A FEW SHOCKS TO TALK ABOUT IN SHOCK PROPAGTION SECTION - y
@@ -507,11 +509,26 @@ SPEED OF A FEW SHOCKS TO TALK ABOUT IN SHOCK PROPAGTION SECTION - y
 
 		TO DO 14/01/18
 
- - plot of maltby values as in note on rhs side of pg 14, dave's comments
+ - plot of maltby values as in note on rhs side of pg 14, dave's comments - y
 
- - fix the sign on the temp multi plots and add vertical dashed lines surrounding ROI
-   then see pg 16, bottom left in commented report - check if still required.
+ - fix the sign on the temp multi plots and add vertical dashed lines surrounding ROI -y
+   
+ - then see pg 16, bottom left in commented report - check if still required.
 
- - plot of the photosphere where the temp multi plots have been taken from
+ - plot of the photosphere where the temp multi plots have been taken from - y
 
  - explain code in appendix 1
+ 
+ - fix the event multiplots (b & w ones) -y
+
+ - comparison to other results and papers
+
+ - table summarising results, heat, intensity, doppler velocity etc
+
+ - expand intro
+
+ - graphs to replace/ include:
+	1. REP XX and XXI, temp 2-plots with fixed scales and added roi marks
+	2. ADD XXIII - Maltby
+	3. ADD XXIV - temp slice locations
+	4. REP X and X (70 and 90) - improved color and scaled intensity 4 plots
