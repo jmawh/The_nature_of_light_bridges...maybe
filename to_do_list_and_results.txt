@@ -4,7 +4,8 @@
 	The code isn't complete and you do lose the first and last 25 frames from the data
    however there is a solid argument for removing them anyway - the RMS isn't going to be 
    as good. At least it's something - maybe try it later in python since it will be
-   faster
+   faster. A complete version now exists  - the first and last 25 frames are handled 
+   separately.
 
 2. Find the optimal value to average over by visual inspection and
    by investigating the minimum and maximum values of intensity.
@@ -513,21 +514,21 @@ SPEED OF A FEW SHOCKS TO TALK ABOUT IN SHOCK PROPAGTION SECTION - y
 
  - fix the sign on the temp multi plots and add vertical dashed lines surrounding ROI -y
    
- - then see pg 16, bottom left in commented report - check if still required.
+ - then see pg 16, bottom left in commented report - check if still required. -y
 
  - plot of the photosphere where the temp multi plots have been taken from - y
 
- - explain code in appendix 1
+ - explain code in appendix 1 - y
  
  - fix the event multiplots (b & w ones) -y
 
- - comparison to other results and papers
+ - comparison to other results and papers - y
 
- - table summarising results, heat, intensity, doppler velocity etc
+ - table summarising results, heat, intensity, doppler velocity etc - y
 
- - expand intro
+ - expand intro - y
 
- - graphs to replace/ include:
+ - graphs to replace/ include: -y to all
 	1. REP XX and XXI, temp 2-plots with fixed scales and added roi marks
 	2. ADD XXIII - Maltby
 	3. ADD XXIV - temp slice locations
