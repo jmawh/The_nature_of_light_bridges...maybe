@@ -305,6 +305,11 @@ frame_2 = sub_scans_300[300:450,470:620,158]
 frame_3 = sub_scans_300[300:450,470:620,160]
 frame_4 = sub_scans_300[300:450,470:620,164]
 
+frame_1 = BYTSCL(frame_1, min = (-300), max = 760)
+frame_2 = BYTSCL(frame_2, min = (-300), max = 760)
+frame_3 = BYTSCL(frame_3, min = (-300), max = 760)
+frame_4 = BYTSCL(frame_4, min = (-300), max = 760)
+
 x1 = 0.1
 x2 = 0.45
 x3 = 0.55
@@ -321,10 +326,10 @@ map_3 = make_map(frame_3, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0
 map_4 = make_map(frame_4, xc=5.25 - (0.5*0.0703), yc=5.25 - (0.5*0.0703), dx=0.0703, dy = 0.0703)
 
 set_plot, 'ps'
-device, filename='/home/40147775/msci/figs/report_figs/X_event_156_multiplot.eps'
+device, filename='/home/40147775/msci/figs/report_figs/X_event_156_multiplot_colour.eps', /color
 !p.background = 255 
 !p.color = 0 
-loadct, 0, /silent
+loadct, 5, /silent
 mult, 1,1
 plot_map, map_1, position=[x1,y3,x2,y4], /noerase, title='Frame 156', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
 plot_map, map_2, position=[x3,y3,x4,y4], /noerase, title='Frame 158', xtitle='Distance (Mm)', ytitle='Distance (Mm)'
@@ -432,7 +437,7 @@ device, /close
 set_plot, 'x'
 
 ; XVII temp-time-dv plot for event 90
-
+RESTORE, '/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/wavelengths_original.sav'
 RESTORE, '/home/40147775/msci/inversion_data/my_sav_files/temp_slice_all_events.sav', /verbose
 restore, '/home/40147775/msci/inversion_data/14Jul_Inv/nlte_temp_correction_all.sav'
 temperature_time = fltarr(75,16)
@@ -482,6 +487,31 @@ loadct, 0, /silent
 oplot, findgen(n_elements(doppler_velocity[90:105]))+90, doppler_velocity[90:105]/1.8+2.8
 device, /close
 set_plot, 'x'
+
+; DOPPLER VEL for Table
+; event 33
+dv = [3.84, 3.91, 3.42 ]
+mean_dv = mean(dv)
+stddev_dv = stddev(dv)
+; 3.72 +- 0.27 
+
+; event 73
+dv = [3.94, 4.45, 4.08]
+mean_dv = mean(dv)
+stddev_dv = stddev(dv)
+; 4.16 +- 0.26
+
+; event 90
+dv = [2.61, 2.98, 2.92]
+mean_dv = mean(dv)
+stddev_dv = stddev(dv)
+; 2.84 +- 0.20
+
+; event 90
+dv = [2.54, 2.71, 2.68]
+mean_dv = mean(dv)
+stddev_dv = stddev(dv)
+; 2.64 +- 0.09
 
 ;XVIII doppler velocity at the light bridge
 data = FILE_SEARCH('/home/40147775/msci/data/14Jul2016/AR12565/IBIS/final_scans/*.fits')
